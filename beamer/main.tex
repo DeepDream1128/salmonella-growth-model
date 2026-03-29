@@ -6,9 +6,8 @@
 \usepackage{amsmath}
 \graphicspath{{./figures/}}
 \zjusectioncolor{blue}
-
-% --- 隐藏顶部 section 导航栏，只保留 frametitle ---
 \setbeamertemplate{headline}{}
+\setbeamertemplate{caption}[numbered]
 
 \title[SE Growth Model]{Dynamic Predictive Model for Growth of \textit{Salmonella} Enteritidis in Egg Yolk}
 \subtitle{Gompertz Model with Modified Ratkowsky Secondary Model}
@@ -32,14 +31,25 @@
 % ==================== Slide 3: Introduction ====================
 \section{Introduction}
 \begin{frame}{Introduction \& Background}
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
 \begin{itemize}
-    \item \textit{Salmonella} Enteritidis (SE) is a leading cause of foodborne illness worldwide
-    \item Shell eggs are a major vehicle --- SE penetrates shell and grows rapidly in iron-rich yolk
-    \item USDA-FSIS requires eggs stored $\leq 7.2\,^\circ$C within 12\,h of laying
-    \item Temperature fluctuates during cooling, storage, and distribution
-    \item \textbf{Objective:} Develop a dynamic Gompertz model for SE growth under sinusoidal temperature (3--43\,$^\circ$C, 24\,h cycle)
-    \item Reference: Gumudavelli et al.\ (2007), \textit{J.\ Food Sci.}\ 72:M254--62
+    \item \textit{Salmonella} Enteritidis (SE) --- leading cause of foodborne illness
+    \item Shell eggs: SE penetrates shell $\rightarrow$ grows in iron-rich yolk
+    \item USDA-FSIS: eggs stored $\leq 7.2\,^\circ$C within 12\,h of laying
+    \item Temperature fluctuates during cooling, storage, distribution
+    \item \textbf{Objective:} Develop a dynamic Gompertz model for SE growth under sinusoidal temperature (3--43\,$^\circ$C)
 \end{itemize}
+\vspace{0.5em}
+{\small Ref: Gumudavelli et al.\ (2007), \textit{J.\ Food Sci.}\ 72:M254--62}
+\end{column}
+\begin{column}{0.35\textwidth}
+\centering
+\includegraphics[width=0.85\linewidth]{salmonella_cdc.jpg}
+
+{\scriptsize\textit{Salmonella} bacteria (colorized SEM).\\Source: NIAID/CDC, public domain.}
+\end{column}
+\end{columns}
 \end{frame}
 
 % ==================== Slide 4: Model ====================
@@ -108,6 +118,9 @@ $T_{\min}$ & Min growth temp            & 6.0\,$^\circ$C  & Fixed \\
 $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \bottomrule
 \end{tabular}}
+
+\vspace{0.3em}
+{\scriptsize Table 1. Model parameters and initial guesses.}
 \end{column}
 \end{columns}
 \end{frame}
@@ -119,14 +132,14 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig01_forward_guess.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,1.} Forward prediction with initial parameter guesses. Black dots: observed; blue line: predicted; red dashed: temperature.}
+
+{\scriptsize Fig.\,1. Forward prediction with initial guesses.\\Black: observed; Blue: predicted; Red: temperature.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig02_ssc_initial.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,2.} Scaled sensitivity coefficients (SSC) computed with initial guesses. All 5 parameters show distinct patterns.}
+
+{\scriptsize Fig.\,2. Scaled sensitivity coefficients (SSC) at initial guesses. All 5 parameters show distinct patterns.}
 \end{column}
 \end{columns}
 \vspace{0.3em}
@@ -142,47 +155,50 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \toprule
 Param & Estimate & SE & Rel.Err (\%) & CI$_{\text{lo}}$ & CI$_{\text{hi}}$ \\
 \midrule
-$A$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
-$C$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
-$M$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
-$a$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
-$b$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
+$A$ & 2.4011 & 0.2540 & 10.58 & 1.8597 & 2.9425 \\
+$C$ & 6.3798 & 0.4565 &  7.16 & 5.4067 & 7.3528 \\
+$M$ & 2.9213 & 1.8074 & 61.87 & $-$0.9310 & 6.7736 \\
+$a$ & 0.001135 & 0.000263 & 23.15 & 0.000575 & 0.001695 \\
+$b$ & 0.2621 & 0.2180 & 83.20 & $-$0.2027 & 0.7268 \\
 \bottomrule
 \end{tabular}}
 
-\vspace{0.8em}
+{\scriptsize Table 2. OLS parameter estimates with standard errors and 95\% confidence intervals.}
+
+\vspace{0.5em}
 {\small
 \begin{tabular}{lccccc}
 \toprule
       & $A$ & $C$ & $M$ & $a$ & $b$ \\
 \midrule
-$A$ & 1 & \ldots & \ldots & \ldots & \ldots \\
-$C$ &   & 1 & \ldots & \ldots & \ldots \\
-$M$ &   &   & 1 & \ldots & \ldots \\
-$a$ &   &   &   & 1 & \ldots \\
-$b$ &   &   &   &   & 1 \\
+$A$ &  1.000 & $-$0.834 &  0.808 & $-$0.281 &  0.459 \\
+$C$ &        &  1.000 & $-$0.711 &  0.050 & $-$0.312 \\
+$M$ &        &        &  1.000 & $-$0.601 &  0.826 \\
+$a$ &        &        &        &  1.000 & $-$0.930 \\
+$b$ &        &        &        &        &  1.000 \\
 \bottomrule
 \end{tabular}
-\hspace{2em}
+\hspace{1.5em}
 \begin{tabular}{lr}
 \toprule
 Metric & Value \\
 \midrule
-RMSE & \ldots \\
-Pseudo-$R^2$ & \ldots \\
-MSE & \ldots \\
+RMSE & 0.2524 \\
+Pseudo-$R^2$ & 0.9874 \\
+MSE & 0.0637 \\
 $N$ & 20 \\
 \bottomrule
 \end{tabular}}
+
+{\scriptsize Table 3. Correlation matrix. \hspace{3em} Table 4. Goodness of fit.}
 \end{frame}
 
 % ==================== Slide 8: CB & PB ====================
 \begin{frame}{Fitted Curve with Confidence \& Prediction Bands}
 \centering
 \includegraphics[width=0.72\linewidth]{fig03_fit_CB_PB.png}
-\vspace{-0.3em}
 
-{\scriptsize\textbf{Fig.\,3.} OLS fitted curve (blue) with 95\% asymptotic confidence band (dark shading) and prediction band (light shading). Black dots: observed data; red dashed: sinusoidal temperature profile.}
+{\scriptsize Fig.\,3. OLS fitted curve with 95\% asymptotic confidence band (dark) and prediction band (light).\\Black dots: observed; Blue line: predicted; Red dashed: sinusoidal temperature.}
 \end{frame}
 
 % ==================== Slide 9: Residuals ====================
@@ -192,14 +208,14 @@ $N$ & 20 \\
 \begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig04_residual_scatter.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,4.} Residuals vs.\ time. Random scatter around zero indicates no systematic bias.}
+
+{\scriptsize Fig.\,4. Residuals vs.\ time.\\Random scatter around zero.}
 \end{column}
 \begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig05_residual_histogram.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,5.} Residual histogram. Approximately bell-shaped, supporting normality assumption.}
+
+{\scriptsize Fig.\,5. Residual histogram.\\Approximately bell-shaped.}
 \end{column}
 \end{columns}
 \vspace{0.3em}
@@ -210,12 +226,14 @@ $N$ & 20 \\
 \# & Assumption & Result \\
 \midrule
 1 & Model is correct      & $\checkmark$ (visual) \\
-2 & Errors are random     & DW = \ldots \\
+2 & Errors are random     & DW = 1.3149 \\
 3 & Constant variance     & $\checkmark$ (visual) \\
 4 & Errors uncorrelated   & See DW \\
-5 & Normal distribution   & SW $p$ = \ldots \\
+5 & Normal distribution   & SW $p$ = 1.0000 ($\checkmark$) \\
 \bottomrule
 \end{tabular}}
+
+{\scriptsize Table 5. Five standard statistical assumptions.}
 \end{frame}
 
 % ==================== Slide 10: Final SSC ====================
@@ -224,8 +242,8 @@ $N$ & 20 \\
 \begin{column}{0.58\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig06_ssc_final.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,6.} SSC recomputed with estimated parameters. Patterns are consistent with initial SSC, confirming identifiability.}
+
+{\scriptsize Fig.\,6. SSC recomputed with estimated parameters.\\Patterns consistent with initial SSC.}
 \end{column}
 \begin{column}{0.38\textwidth}
 \centering
@@ -234,16 +252,18 @@ $N$ & 20 \\
 \toprule
 Param & max$|$SSC$|$ \\
 \midrule
-$A$ & \ldots \\
-$C$ & \ldots \\
-$M$ & \ldots \\
-$a$ & \ldots \\
-$b$ & \ldots \\
+$A$ & 2.4649 \\
+$C$ & 4.2172 \\
+$M$ & 1.1521 \\
+$a$ & 3.0349 \\
+$b$ & 1.3092 \\
 \bottomrule
 \end{tabular}}
 
+{\scriptsize Table 6. Final SSC magnitudes.}
+
 \vspace{1em}
-{\small All parameters remain identifiable at the OLS solution.}
+{\small All parameters identifiable at the OLS solution.}
 \end{column}
 \end{columns}
 \end{frame}
@@ -255,14 +275,14 @@ $b$ & \ldots \\
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig07_delta_criterion.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,7.} Delta criterion $\det(X^TX)$ vs.\ last measurement time. Increasing trend indicates more data improves estimation.}
+
+{\scriptsize Fig.\,7. Delta criterion $\det(X^TX)$ vs.\ last measurement time. Increasing trend: more data improves estimation.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig08_Cii_curves.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,8.} $C_{ii}$ curves (log scale). Decreasing values indicate improved parameter precision with more measurements.}
+
+{\scriptsize Fig.\,8. $C_{ii}$ curves (log scale). Decreasing values: parameters become more precise.}
 \end{column}
 \end{columns}
 \vspace{0.3em}
@@ -281,32 +301,36 @@ $b$ & \ldots \\
  & \multicolumn{2}{c}{Bootstrap CI} & \multicolumn{2}{c}{Asymptotic CI} \\
 Param & Lower & Upper & Lower & Upper \\
 \midrule
-$A$ & \ldots & \ldots & \ldots & \ldots \\
-$C$ & \ldots & \ldots & \ldots & \ldots \\
-$M$ & \ldots & \ldots & \ldots & \ldots \\
-$a$ & \ldots & \ldots & \ldots & \ldots \\
-$b$ & \ldots & \ldots & \ldots & \ldots \\
+$A$ & 1.600 & 2.741 & 1.860 & 2.943 \\
+$C$ & 5.761 & 7.819 & 5.407 & 7.353 \\
+$M$ & $-$0.624 & 5.388 & $-$0.931 & 6.774 \\
+$a$ & 8.81e-4 & 2.11e-3 & 5.75e-4 & 1.70e-3 \\
+$b$ & 0.065 & --- & $-$0.203 & 0.727 \\
 \bottomrule
 \end{tabular}}
 
-\vspace{0.5em}
+{\scriptsize Table 7. Bootstrap vs.\ asymptotic 95\% CI.}
+
+\vspace{0.4em}
 {\footnotesize
 \begin{tabular}{lc}
 \toprule
 Band & Avg Width \\
 \midrule
-Asymptotic CB & \ldots \\
-Bootstrap CB  & \ldots \\
-Asymptotic PB & \ldots \\
-Bootstrap PB  & \ldots \\
+Asymptotic CB & 0.5307 \\
+Bootstrap CB  & 0.4058 \\
+Asymptotic PB & 1.2042 \\
+Bootstrap PB  & 1.0720 \\
 \bottomrule
 \end{tabular}}
+
+{\scriptsize Table 8. Band width comparison.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig09_bootstrap_CB_PB.png}
-\vspace{-0.5em}
-{\scriptsize\textbf{Fig.\,9.} Bootstrap confidence band (green) and prediction band (pink) from 1000 residual-resampling iterations.}
+
+{\scriptsize Fig.\,9. Bootstrap CB (green) and PB (pink) from 1000 residual-resampling iterations.}
 \end{column}
 \end{columns}
 \end{frame}
@@ -316,10 +340,10 @@ Bootstrap PB  & \ldots \\
 \begin{frame}{Summary \& Conclusions}
 \begin{itemize}
     \item Dynamic Gompertz model successfully developed for SE growth in egg yolk
-    \item 5 parameters estimated, 2 fixed; RMSE $< 0.3\;\log_{10}$ CFU/mL
-    \item All 5 standard statistical assumptions evaluated
+    \item 5 parameters estimated, 2 fixed; RMSE = 0.2524 $\log_{10}$ CFU/mL
+    \item Pseudo-$R^2$ = 0.9874; all 5 statistical assumptions evaluated
     \item Optimal experimental design: key window at 2--8\,hr
-    \item Bootstrap CIs consistent with asymptotic CIs
+    \item Bootstrap CIs generally consistent with asymptotic CIs
     \item \textbf{Practical significance:} Model predicts SE risk during egg cooling, storage, and distribution --- supports USDA-FSIS 7.2\,$^\circ$C recommendation
 \end{itemize}
 \end{frame}
@@ -327,12 +351,13 @@ Bootstrap PB  & \ldots \\
 % ==================== Slide 14: References ====================
 \section{References}
 \begin{frame}{References}
+{\small
 \begin{itemize}
-    \item Gumudavelli V, Subbiah J, Thippareddi H, Velugoti PR, Froning G.\ 2007.\ Dynamic predictive model for growth of \textit{Salmonella} Enteritidis in egg yolk.\ \textit{J.\ Food Sci.}\ 72:M254--62.
+    \item Gumudavelli V et al.\ 2007.\ Dynamic predictive model for growth of \textit{Salmonella} Enteritidis in egg yolk.\ \textit{J.\ Food Sci.}\ 72:M254--62.
     \item Baranyi J, Roberts TA.\ 1994.\ A dynamic approach to predicting bacterial growth in food.\ \textit{Int J Food Microbiol}\ 23:277--94.
-    \item Zwietering MH et al.\ 1991.\ Modeling of the bacterial growth as a function of temperature.\ \textit{Appl Environ Microbiol}\ 57:1094--101.
+    \item Zwietering MH et al.\ 1991.\ Modeling of bacterial growth as a function of temperature.\ \textit{Appl Environ Microbiol}\ 57:1094--101.
     \item Beck JV, Arnold KJ.\ 1977.\ \textit{Parameter Estimation in Engineering and Science}.\ Wiley.
-\end{itemize}
+\end{itemize}}
 \end{frame}
 
 % ==================== Slide 15: Thank You ====================
@@ -340,8 +365,8 @@ Bootstrap PB  & \ldots \\
 \centering
 \vspace{2cm}
 {\Huge Thank You!}
-
 \vspace{1.5cm}
+
 {\Large Questions?}
 \end{frame}
 
