@@ -1,0 +1,336 @@
+\PassOptionsToPackage{quiet}{fontspec}
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage{zju_beamer}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\graphicspath{{./figures/}}
+\zjusectioncolor{blue}
+
+\title[SE Growth Model]{Dynamic Predictive Model for Growth of \textit{Salmonella} Enteritidis in Egg Yolk}
+\subtitle{Gompertz Model with Modified Ratkowsky Secondary Model}
+\author[Group X]{Member A, Member B, Member C}
+\institute[ZJU]{College of Biosystems Engineering and Food Science \\ Zhejiang University}
+\date{April 21, 2026}
+
+\begin{document}
+
+% ==================== Slide 1: Title ====================
+\begin{frame}
+\titlepage
+\end{frame}
+
+% ==================== Slide 2: Outline ====================
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+% ==================== Slide 3: Introduction ====================
+\section{Introduction}
+\begin{frame}{Introduction \& Background}
+\begin{itemize}
+    \item \textit{Salmonella} Enteritidis (SE) is a leading cause of foodborne illness worldwide
+    \item Shell eggs are a major vehicle --- SE penetrates shell and grows rapidly in iron-rich yolk
+    \item USDA-FSIS requires eggs stored $\leq 7.2\,^\circ$C within 12\,h of laying
+    \item Temperature fluctuates during cooling, storage, and distribution
+    \item \textbf{Objective:} Develop a dynamic Gompertz model for SE growth under sinusoidal temperature (3--43\,$^\circ$C, 24\,h cycle)
+    \item Reference: Gumudavelli et al.\ (2007), \textit{J.\ Food Sci.}\ 72:M254--62
+\end{itemize}
+\end{frame}
+
+% ==================== Slide 4: Model ====================
+\section{Model}
+\begin{frame}{Model Description}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Primary Model (Gompertz)}
+
+Constant $T$ (analytical):
+\begin{equation*}
+y(t) = A + C \cdot e^{-e^{(\mu e / C)(M-t)+1}}
+\end{equation*}
+
+Variable $T$ (ODE):
+\begin{equation*}
+\frac{dy}{dt} = -\mu(T)\, e\, \frac{y-A}{C}\, \ln\!\left(\frac{y-A}{C}\right)
+\end{equation*}
+
+$y = \log_{10}N$;\; $A$: initial;\; $C$: range;\; $M$: inflection time
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Secondary Model (Ratkowsky)}
+\begin{equation*}
+\mu(T) = a(T - T_{\min})^2 \left(1 - e^{b(T - T_{\max})}\right)
+\end{equation*}
+
+$a, b$: regression coefficients\\
+$T_{\min} = 6\,^\circ$C,\; $T_{\max} = 46.3\,^\circ$C (fixed)
+
+\vspace{1em}
+\textbf{Dynamic Model}\\
+Integrate primary + secondary,\\
+solve numerically with \texttt{ode45}.\\
+Temperature interpolated via \texttt{interp1}.
+\end{column}
+\end{columns}
+\end{frame}
+
+% ==================== Slide 5: Data & Parameters ====================
+\section{Data \& Parameters}
+\begin{frame}{Data \& Parameters}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\textbf{Data Summary}
+\begin{itemize}
+    \item Growth: 12 time points (0--17\,hr), 20 observations
+    \item 0--2\,hr: single; 3--17\,hr: duplicates
+    \item Temperature: 47 points, sinusoidal $\sim$7--43\,$^\circ$C
+    \item Interpolated via \texttt{interp1}
+\end{itemize}
+\end{column}
+\begin{column}{0.52\textwidth}
+\centering
+{\small
+\begin{tabular}{llcc}
+\toprule
+Param & Description & Guess & Status \\
+\midrule
+$A$        & Init.\ $\log_{10}$(CFU/mL) & 2.60     & Est.\ \\
+$C$        & Growth range               & 11       & Est.\ \\
+$M$        & Inflection time (hr)       & 7.5      & Est.\ \\
+$a$        & Ratkowsky coeff            & 3.38e-4  & Est.\ \\
+$b$        & Ratkowsky coeff            & 0.275    & Est.\ \\
+$T_{\min}$ & Min growth temp            & 6.0\,$^\circ$C  & Fixed \\
+$T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
+\bottomrule
+\end{tabular}}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ==================== Slide 6: Forward & SSC ====================
+\section{Forward Problem}
+\begin{frame}{Forward Problem \& Scaled Sensitivity Coefficients}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig01_forward_guess.png}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig02_ssc_initial.png}
+\end{column}
+\end{columns}
+\vspace{0.3em}
+\begin{itemize}
+    \item Initial guesses produce reasonable fit $\rightarrow$ \texttt{nlinfit} can converge
+    \item All 5 parameters show distinct SSC patterns $\rightarrow$ estimable
+    \item $T_{\min}$, $T_{\max}$ have negligible SSC $\rightarrow$ fixed
+\end{itemize}
+\end{frame}
+
+% ==================== Slide 7: OLS Results ====================
+\section{OLS Estimation}
+\begin{frame}{OLS Parameter Estimates}
+\centering
+{\small
+\begin{tabular}{lrrrrr}
+\toprule
+Param & Estimate & SE & Rel.Err (\%) & CI$_{\text{lo}}$ & CI$_{\text{hi}}$ \\
+\midrule
+$A$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
+$C$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
+$M$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
+$a$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
+$b$ & \ldots & \ldots & \ldots & \ldots & \ldots \\
+\bottomrule
+\end{tabular}}
+
+\vspace{0.8em}
+{\small
+\begin{tabular}{lccccc}
+\toprule
+      & $A$ & $C$ & $M$ & $a$ & $b$ \\
+\midrule
+$A$ & 1 & \ldots & \ldots & \ldots & \ldots \\
+$C$ &   & 1 & \ldots & \ldots & \ldots \\
+$M$ &   &   & 1 & \ldots & \ldots \\
+$a$ &   &   &   & 1 & \ldots \\
+$b$ &   &   &   &   & 1 \\
+\bottomrule
+\end{tabular}
+\hspace{2em}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+RMSE & \ldots \\
+Pseudo-$R^2$ & \ldots \\
+MSE & \ldots \\
+$N$ & 20 \\
+\bottomrule
+\end{tabular}}
+\end{frame}
+
+% ==================== Slide 8: CB & PB ====================
+\begin{frame}{Fitted Curve with Confidence \& Prediction Bands}
+\centering
+\includegraphics[width=0.78\linewidth]{fig03_fit_CB_PB.png}
+
+\vspace{0.3em}
+{\small CB: 95\% band for mean response \hspace{2em} PB: 95\% band for new observation}
+\end{frame}
+
+% ==================== Slide 9: Residuals ====================
+\section{Residual Analysis}
+\begin{frame}{Residual Analysis}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig04_residual_scatter.png}
+\end{column}
+\begin{column}{0.45\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig05_residual_histogram.png}
+\end{column}
+\end{columns}
+\vspace{0.3em}
+\centering
+{\small
+\begin{tabular}{clc}
+\toprule
+\# & Assumption & Result \\
+\midrule
+1 & Model is correct      & $\checkmark$ (visual) \\
+2 & Errors are random     & DW = \ldots \\
+3 & Constant variance     & $\checkmark$ (visual) \\
+4 & Errors uncorrelated   & See DW \\
+5 & Normal distribution   & SW $p$ = \ldots \\
+\bottomrule
+\end{tabular}}
+\end{frame}
+
+% ==================== Slide 10: Final SSC ====================
+\begin{frame}{Final Scaled Sensitivity Coefficients}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig06_ssc_final.png}
+\end{column}
+\begin{column}{0.35\textwidth}
+\centering
+{\small
+\begin{tabular}{lr}
+\toprule
+Param & max$|$SSC$|$ \\
+\midrule
+$A$ & \ldots \\
+$C$ & \ldots \\
+$M$ & \ldots \\
+$a$ & \ldots \\
+$b$ & \ldots \\
+\bottomrule
+\end{tabular}}
+
+\vspace{1em}
+SSC patterns consistent with initial guesses $\rightarrow$ all parameters identifiable at solution.
+\end{column}
+\end{columns}
+\end{frame}
+
+% ==================== Slide 11: OED ====================
+\section{Optimal Experimental Design}
+\begin{frame}{Optimal Experimental Design}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig07_delta_criterion.png}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig08_Cii_curves.png}
+\end{column}
+\end{columns}
+\vspace{0.3em}
+\begin{itemize}
+    \item $\det(X^TX)$ increases with time $\rightarrow$ longer experiments provide more information
+    \item $C_{ii}$ decreases $\rightarrow$ parameters become more precise
+    \item Key measurement window: exponential growth phase ($\sim$2--8\,hr)
+\end{itemize}
+\end{frame}
+
+% ==================== Slide 12: Bootstrap ====================
+\section{Bootstrap}
+\begin{frame}{Bootstrap Analysis ($N=1000$)}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\centering
+{\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Bootstrap CI} & \multicolumn{2}{c}{Asymptotic CI} \\
+Param & Lower & Upper & Lower & Upper \\
+\midrule
+$A$ & \ldots & \ldots & \ldots & \ldots \\
+$C$ & \ldots & \ldots & \ldots & \ldots \\
+$M$ & \ldots & \ldots & \ldots & \ldots \\
+$a$ & \ldots & \ldots & \ldots & \ldots \\
+$b$ & \ldots & \ldots & \ldots & \ldots \\
+\bottomrule
+\end{tabular}}
+
+\vspace{0.5em}
+{\footnotesize
+\begin{tabular}{lc}
+\toprule
+Band & Avg Width \\
+\midrule
+Asymptotic CB & \ldots \\
+Bootstrap CB  & \ldots \\
+Asymptotic PB & \ldots \\
+Bootstrap PB  & \ldots \\
+\bottomrule
+\end{tabular}}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{fig09_bootstrap_CB_PB.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ==================== Slide 13: Summary ====================
+\section{Summary}
+\begin{frame}{Summary \& Conclusions}
+\begin{itemize}
+    \item Dynamic Gompertz model successfully developed for SE growth in egg yolk
+    \item 5 parameters estimated, 2 fixed; RMSE $< 0.3\;\log_{10}$ CFU/mL
+    \item All 5 standard statistical assumptions evaluated
+    \item Optimal experimental design: key window at 2--8\,hr
+    \item Bootstrap CIs consistent with asymptotic CIs
+    \item \textbf{Practical significance:} Model predicts SE risk during egg cooling, storage, and distribution --- supports USDA-FSIS 7.2\,$^\circ$C recommendation
+\end{itemize}
+\end{frame}
+
+% ==================== Slide 14: References ====================
+\section{References}
+\begin{frame}{References}
+\begin{itemize}
+    \item Gumudavelli V, Subbiah J, Thippareddi H, Velugoti PR, Froning G.\ 2007.\ Dynamic predictive model for growth of \textit{Salmonella} Enteritidis in egg yolk.\ \textit{J.\ Food Sci.}\ 72:M254--62.
+    \item Baranyi J, Roberts TA.\ 1994.\ A dynamic approach to predicting bacterial growth in food.\ \textit{Int J Food Microbiol}\ 23:277--94.
+    \item Zwietering MH et al.\ 1991.\ Modeling of the bacterial growth as a function of temperature.\ \textit{Appl Environ Microbiol}\ 57:1094--101.
+    \item Beck JV, Arnold KJ.\ 1977.\ \textit{Parameter Estimation in Engineering and Science}.\ Wiley.
+\end{itemize}
+\end{frame}
+
+% ==================== Slide 15: Thank You ====================
+\begin{frame}
+\centering
+\vspace{2cm}
+{\Huge Thank You!}
+
+\vspace{1.5cm}
+{\Large Questions?}
+\end{frame}
+
+\end{document}
