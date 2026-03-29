@@ -40,16 +40,16 @@
     \item Temperature fluctuates during cooling, storage, distribution
     \item \textbf{Objective:} Develop a dynamic Gompertz model for SE growth under sinusoidal temperature (3--43\,$^\circ$C)
 \end{itemize}
-\vspace{0.5em}
-{\small Ref: Gumudavelli et al.\ (2007), \textit{J.\ Food Sci.}\ 72:M254--62}
 \end{column}
 \begin{column}{0.35\textwidth}
 \centering
 \includegraphics[width=0.85\linewidth]{salmonella_cdc.jpg}
 
-{\scriptsize\textit{Salmonella} bacteria (colorized SEM).\\Source: NIAID/CDC, public domain.}
+{\footnotesize\textit{Salmonella} bacteria (colorized SEM).\\Source: NIAID/CDC, public domain.}
 \end{column}
 \end{columns}
+\vfill
+{\tiny\color{gray} Gumudavelli et al.\ (2007), \textit{J.\ Food Sci.}\ 72:M254--62;\quad Humphrey (1994), \textit{Int J Food Microbiol}\ 21:31--40.}
 \end{frame}
 
 % ==================== Slide 4: Model ====================
@@ -87,6 +87,8 @@ solve numerically with \texttt{ode45}.\\
 Temperature interpolated via \texttt{interp1}.
 \end{column}
 \end{columns}
+\vfill
+{\tiny\color{gray} Zwietering et al.\ (1991), \textit{Appl Environ Microbiol}\ 57:1094--101;\quad Baranyi \& Roberts (1994), \textit{Int J Food Microbiol}\ 23:277--94.}
 \end{frame}
 
 % ==================== Slide 5: Data & Parameters ====================
@@ -120,9 +122,11 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \end{tabular}}
 
 \vspace{0.3em}
-{\scriptsize Table 1. Model parameters and initial guesses.}
+{\footnotesize\textbf{Table 1.} Model parameters and initial guesses.}
 \end{column}
 \end{columns}
+\vfill
+{\tiny\color{gray} Data source: Gumudavelli et al.\ (2007), Fig.\,5c --- sinusoidal temperature profile.}
 \end{frame}
 
 % ==================== Slide 6: Forward & SSC ====================
@@ -132,18 +136,22 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig01_forward_guess.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,1. Forward prediction with initial guesses.\\Black: observed; Blue: predicted; Red: temperature.}
+{\footnotesize\textbf{Fig.\,1.} Forward prediction with initial guesses.\\Black: observed; Blue: predicted; Red: temperature.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig02_ssc_initial.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,2. Scaled sensitivity coefficients (SSC) at initial guesses. All 5 parameters show distinct patterns.}
+{\footnotesize\textbf{Fig.\,2.} Scaled sensitivity coefficients at initial guesses. All 5 parameters show distinct patterns.}
 \end{column}
 \end{columns}
-\vspace{0.3em}
+\vspace{0.2em}
 {\small $T_{\min}$, $T_{\max}$ have negligible SSC $\rightarrow$ fixed at literature values.}
+\vfill
+{\tiny\color{gray} SSC: $\text{SSC}_{ij} = p_j \cdot \partial y_i / \partial p_j$;\quad Beck \& Arnold (1977), Ch.\,5.}
 \end{frame}
 
 % ==================== Slide 7: OLS Results ====================
@@ -163,10 +171,13 @@ $b$ & 0.2621 & 0.2180 & 83.20 & $-$0.2027 & 0.7268 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 2. OLS parameter estimates with standard errors and 95\% confidence intervals.}
+\vspace{0.2em}
+{\footnotesize\textbf{Table 2.} OLS parameter estimates with standard errors and 95\% confidence intervals.}
 
-\vspace{0.8em}
+\vspace{0.6em}
 {\small RMSE = 0.2524 $\log_{10}$ CFU/mL \hspace{2em} Pseudo-$R^2$ = 0.9874 \hspace{2em} MSE = 0.0637 \hspace{2em} $N$ = 20}
+\vfill
+{\tiny\color{gray} Estimated via MATLAB \texttt{nlinfit} (Levenberg--Marquardt);\quad Beck \& Arnold (1977).}
 \end{frame}
 
 % ==================== Slide 7b: Correlation ====================
@@ -185,22 +196,26 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 3. Parameter correlation matrix.}
+\vspace{0.2em}
+{\footnotesize\textbf{Table 3.} Parameter correlation matrix.}
 
-\vspace{1em}
+\vspace{0.8em}
 \begin{itemize}
     \item Strong correlation between $a$ and $b$ ($-$0.930) --- expected for Ratkowsky coefficients
     \item $M$ and $b$ also correlated (0.826) --- lag time linked to temperature sensitivity
-    \item High correlations may increase parameter uncertainty but do not prevent estimation
+    \item High correlations may increase uncertainty but do not prevent estimation
 \end{itemize}
 \end{frame}
 
 % ==================== Slide 8: CB & PB ====================
 \begin{frame}{Fitted Curve with Confidence \& Prediction Bands}
 \centering
-\includegraphics[width=0.72\linewidth]{fig03_fit_CB_PB.png}
+\includegraphics[width=0.70\linewidth]{fig03_fit_CB_PB.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,3. OLS fitted curve with 95\% asymptotic confidence band (dark) and prediction band (light).\\Black dots: observed; Blue line: predicted; Red dashed: sinusoidal temperature.}
+{\footnotesize\textbf{Fig.\,3.} OLS fitted curve with 95\% asymptotic confidence band (dark) and prediction band (light). Black dots: observed; Blue: predicted; Red dashed: temperature.}
+\vfill
+{\tiny\color{gray} CB and PB computed via MATLAB \texttt{nlpredci};\quad Gumudavelli et al.\ (2007).}
 \end{frame}
 
 % ==================== Slide 9: Residuals ====================
@@ -210,17 +225,19 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig04_residual_scatter.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,4. Residuals vs.\ time.\\Random scatter around zero.}
+{\footnotesize\textbf{Fig.\,4.} Residuals vs.\ time.\\Random scatter around zero.}
 \end{column}
 \begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig05_residual_histogram.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,5. Residual histogram.\\Approximately bell-shaped.}
+{\footnotesize\textbf{Fig.\,5.} Residual histogram.\\Approximately bell-shaped.}
 \end{column}
 \end{columns}
-\vspace{0.3em}
+\vspace{0.2em}
 \centering
 {\small
 \begin{tabular}{clc}
@@ -235,7 +252,8 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 5. Five standard statistical assumptions.}
+\vspace{0.1em}
+{\footnotesize\textbf{Table 4.} Five standard statistical assumptions.}
 \end{frame}
 
 % ==================== Slide 10: Final SSC ====================
@@ -244,8 +262,9 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \begin{column}{0.58\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig06_ssc_final.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,6. SSC recomputed with estimated parameters.\\Patterns consistent with initial SSC.}
+{\footnotesize\textbf{Fig.\,6.} SSC recomputed with estimated parameters. Patterns consistent with initial SSC.}
 \end{column}
 \begin{column}{0.38\textwidth}
 \centering
@@ -262,12 +281,15 @@ $b$ & 1.3092 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 6. Final SSC magnitudes.}
+\vspace{0.2em}
+{\footnotesize\textbf{Table 5.} Final SSC magnitudes.}
 
-\vspace{1em}
+\vspace{0.8em}
 {\small All parameters identifiable at the OLS solution.}
 \end{column}
 \end{columns}
+\vfill
+{\tiny\color{gray} Beck \& Arnold (1977), p.\,29--30.}
 \end{frame}
 
 % ==================== Slide 11: OED ====================
@@ -277,18 +299,22 @@ $b$ & 1.3092 \\
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig07_delta_criterion.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,7. Delta criterion $\det(X^TX)$ vs.\ last measurement time. Increasing trend: more data improves estimation.}
+{\footnotesize\textbf{Fig.\,7.} Delta criterion $\det(X^TX)$ vs.\ last measurement time. Increasing: more data helps.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig08_Cii_curves.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,8. $C_{ii}$ curves (log scale). Decreasing values: parameters become more precise.}
+{\footnotesize\textbf{Fig.\,8.} $C_{ii}$ curves (log scale). Decreasing: parameters become more precise.}
 \end{column}
 \end{columns}
-\vspace{0.3em}
+\vspace{0.2em}
 {\small Key measurement window: exponential growth phase ($\sim$2--8\,hr).}
+\vfill
+{\tiny\color{gray} Beck \& Arnold (1977), p.\,419--443.}
 \end{frame}
 
 % ==================== Slide 12: Bootstrap ====================
@@ -311,9 +337,10 @@ $b$ & 0.065 & --- & $-$0.203 & 0.727 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 7. Bootstrap vs.\ asymptotic 95\% CI.}
+\vspace{0.1em}
+{\footnotesize\textbf{Table 6.} Bootstrap vs.\ asymptotic 95\% CI.}
 
-\vspace{0.4em}
+\vspace{0.3em}
 {\footnotesize
 \begin{tabular}{lc}
 \toprule
@@ -326,15 +353,19 @@ Bootstrap PB  & 1.0720 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 8. Band width comparison.}
+\vspace{0.1em}
+{\footnotesize\textbf{Table 7.} Band width comparison.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig09_bootstrap_CB_PB.png}
+\vspace{-0.3em}
 
-{\scriptsize Fig.\,9. Bootstrap CB (green) and PB (pink) from 1000 residual-resampling iterations.}
+{\footnotesize\textbf{Fig.\,9.} Bootstrap CB (green) and PB (pink) from 1000 residual-resampling iterations.}
 \end{column}
 \end{columns}
+\vfill
+{\tiny\color{gray} Residual resampling bootstrap;\quad Beck \& Arnold (1977).}
 \end{frame}
 
 % ==================== Slide 13: Summary ====================
