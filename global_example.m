@@ -4,6 +4,11 @@
 %  Secondary: Modified Ratkowsky equation
 clear; clc; close all;
 
+% Create figs folder for saving all figures
+if ~exist('figs', 'dir')
+    mkdir('figs');
+end
+
 %% ==================== 1. Read Data ====================
 global tTemp
 
@@ -59,6 +64,7 @@ title('Forward Problem: Y_{pred} with Initial Guesses', 'FontSize', 14);
 legend('Observed', 'Predicted (guess)', 'Temperature', 'Location', 'northwest', 'FontSize', 12);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig01_forward_guess.png');
 
 %% ==================== 4. SSC with Initial Guesses ====================
 logN_base = gompertzFOR(beta0, tobs);
@@ -80,6 +86,7 @@ title('SSC with Initial Parameter Guesses', 'FontSize', 14);
 legend(pnames, 'Location', 'best', 'FontSize', 12);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig02_ssc_initial.png');
 
 fprintf('\n--- SSC (Initial Guesses) ---\n');
 for j = 1:Np
@@ -158,6 +165,7 @@ legend('Prediction Band', 'Confidence Band', 'Observed', 'Predicted', 'Temperatu
     'Location', 'northwest', 'FontSize', 11);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig03_fit_CB_PB.png');
 
 %% ==================== 7. Residual Analysis ====================
 logN_pred_data = gompertzFOR(beta, tobs);
@@ -172,6 +180,7 @@ ylabel('Residual (log_{10} CFU/mL)', 'FontSize', 14);
 title('Residual Scatter Plot', 'FontSize', 14);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig04_residual_scatter.png');
 
 % Residual histogram
 figure('Name','Residual Histogram');
@@ -180,6 +189,7 @@ xlabel('Residual (log_{10} CFU/mL)', 'FontSize', 14);
 ylabel('Frequency', 'FontSize', 14);
 title('Residual Histogram', 'FontSize', 14);
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig05_residual_histogram.png');
 
 % Five standard statistical assumptions
 fprintf('\n--- Standard Statistical Assumptions ---\n');
@@ -225,6 +235,7 @@ title('SSC with Estimated Parameters', 'FontSize', 14);
 legend(pnames, 'Location', 'best', 'FontSize', 12);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig06_ssc_final.png');
 
 %% ==================== 9. Optimal Experimental Design ====================
 % Delta criterion: det(X'X) as a function of number of data points
@@ -265,6 +276,7 @@ ylabel('det(X^TX)', 'FontSize', 14);
 title('Delta Criterion for Optimal Experimental Design', 'FontSize', 14);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig07_delta_criterion.png');
 
 figure('Name','Optimal Experimental Design - Cii');
 plot(t_design(Np:end), Cii_curves(Np:end, :), '-', 'LineWidth', 2);
@@ -274,6 +286,7 @@ title('C_{ii} Curves for Optimal Experimental Design', 'FontSize', 14);
 legend(pnames, 'Location', 'best', 'FontSize', 12);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig08_Cii_curves.png');
 
 %% ==================== 10. Bootstrap ====================
 fprintf('\n--- Bootstrap (Residual Resampling) ---\n');
@@ -346,6 +359,7 @@ legend('Bootstrap PB', 'Bootstrap CB', 'Observed', 'Predicted', 'Temperature', .
     'Location', 'northwest', 'FontSize', 11);
 grid on;
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig09_bootstrap_CB_PB.png');
 
 % Compare bootstrap vs asymptotic
 fprintf('\n  Bootstrap vs Asymptotic band widths (average):\n');
@@ -354,7 +368,7 @@ fprintf('  Bootstrap  CB width: %.4f\n', mean(CB_boot_hi - CB_boot_lo));
 fprintf('  Asymptotic PB width: %.4f\n', mean(PB_upper - PB_lower));
 fprintf('  Bootstrap  PB width: %.4f\n', mean(PB_boot_hi - PB_boot_lo));
 
-fprintf('\nDone. All figures generated.\n');
+fprintf('\nDone. All figures saved to figs/ folder.\n');
 
 %% ==================== Shapiro-Wilk Test ====================
 function [H, pValue] = swtest(x)
