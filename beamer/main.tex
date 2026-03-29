@@ -231,35 +231,45 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \section{Residual Analysis}
 \begin{frame}{Residual Analysis}
 \begin{columns}[T]
-\begin{column}{0.42\textwidth}
+\begin{column}{0.38\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig04_residual_scatter.png}
 \vspace{-0.3em}
-{\footnotesize\textbf{Fig.\,4.} Residuals vs.\ time. Random scatter around zero.}
+{\footnotesize\textbf{Fig.\,4.} Residuals vs.\ time.}
 \end{column}
-\begin{column}{0.42\textwidth}
+\begin{column}{0.38\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig05_residual_histogram.png}
 \vspace{-0.3em}
-{\footnotesize\textbf{Fig.\,5.} Residual histogram. Approximately bell-shaped.}
+{\footnotesize\textbf{Fig.\,5.} Residual histogram.}
 \end{column}
-\end{columns}
-\vspace{0.2em}
-\centering
-{\small
-\begin{tabular}{clc}
+\begin{column}{0.22\textwidth}
+\vspace{0.5em}
+{\scriptsize
+\begin{tabular}{cl}
 \toprule
-\# & Assumption & Result \\
+\# & Assumption \\
 \midrule
-1 & Model is correct      & $\checkmark$ (visual) \\
-2 & Errors are random     & DW = 1.3149 \\
-3 & Constant variance     & $\checkmark$ (visual) \\
-4 & Errors uncorrelated   & See DW \\
-5 & Normal distribution   & SW $p$ = 1.0000 ($\checkmark$) \\
+1 & Correct model \\
+2 & Random errors \\
+3 & Const.\ variance \\
+4 & Uncorrelated \\
+5 & Normality \\
 \bottomrule
 \end{tabular}}
-\vspace{0.1em}
-{\footnotesize\textbf{Table 4.} Five standard statistical assumptions.}
+\vspace{0.2em}
+
+{\footnotesize\textbf{Table 4.}}
+\end{column}
+\end{columns}
+\vspace{0.3em}
+{\small
+\begin{itemize}
+    \item Residuals scatter randomly around zero --- no systematic pattern (Assumptions 1, 3)
+    \item Durbin--Watson $d = 1.3149$; borderline --- mild positive autocorrelation possible
+    \item Shapiro--Wilk $p = 1.0000$ --- normality not rejected at 5\% level
+    \item Overall: OLS assumptions reasonably satisfied for this dataset
+\end{itemize}}
 \end{frame}
 
 % ==================== Slide 10: Final SSC ====================
