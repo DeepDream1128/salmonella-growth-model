@@ -279,9 +279,9 @@ set(gca, 'FontSize', 12);
 saveas(gcf, 'figs/fig07_delta_criterion.png');
 
 figure('Name','Optimal Experimental Design - Cii');
-plot(t_design(Np:end), Cii_curves(Np:end, :), '-', 'LineWidth', 2);
+semilogy(t_design(Np:end), Cii_curves(Np:end, :), '-', 'LineWidth', 2);
 xlabel('Last Measurement Time (hr)', 'FontSize', 14);
-ylabel('C_{ii}', 'FontSize', 14);
+ylabel('C_{ii} (log scale)', 'FontSize', 14);
 title('C_{ii} Curves for Optimal Experimental Design', 'FontSize', 14);
 legend(pnames, 'Location', 'northeast', 'FontSize', 12);
 grid on;
