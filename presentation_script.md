@@ -38,23 +38,29 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 4 — Data Description (~45 sec)
+## Slide 4 — Experimental Growth Data (~45 sec)
 
-> Our experimental data comes from Gumudavelli et al., specifically Figure 5c — the sinusoidal temperature profile.
+> This table shows our experimental growth data from Gumudavelli et al., Figure 5c. The data was collected under a sinusoidal temperature profile.
 >
-> The growth data consists of 12 time points from 0 to 17 hours, giving us 20 total observations. The first four time points — 0, 0.5, 1, and 2 hours — have single measurements, while the remaining time points from 3 to 17 hours have duplicate measurements.
+> As you can see, at time zero the SE concentration is about 304 CFU per mL. By 17 hours it has grown to nearly 400 million. The first four time points have single measurements, while from 3 hours onward we have duplicate measurements, giving us 20 total data points.
 >
-> The temperature data has 47 points over approximately 22 hours, following a sinusoidal wave between roughly 7 and 43 degrees Celsius. We use MATLAB's interp1 function to interpolate the temperature at any time needed by the ODE solver.
+> Note the rapid growth between 2 and 6 hours — this corresponds to the high-temperature phase of the sinusoidal cycle.
+
+## Slide 5 — Temperature Data (~30 sec)
+
+> This table shows selected points from our temperature profile. The full dataset has 47 points sampled at roughly 28.8-minute intervals over 22 hours.
+>
+> The temperature follows a sinusoidal wave, cycling between about 7 and 43 degrees Celsius. We use MATLAB's interp1 function to interpolate the temperature at any time the ODE solver needs it.
 
 ---
 
-## Slide 5 — Parameters & Initial Guesses (~30 sec)
+## Slide 6 — Parameters & Initial Guesses (~30 sec)
 
 > Here is a summary of our seven parameters. We estimate five of them — A, C, M, a, and b — and fix T-min at 6 degrees and T-max at 46.3 degrees. The initial guesses shown here were provided by the instructor. We'll verify these are reasonable in the next slide.
 
 ---
 
-## Slide 6 — Forward Problem & SSC (~1.5 min)
+## Slide 7 — Forward Problem & SSC (~1.5 min)
 
 > On the left, you can see the forward problem result. Using our initial guesses, we solved the ODE and plotted the predicted log N against the observed data. The black dots are observations, the blue line is our prediction, and the red dashed line shows the temperature profile on the right axis. The prediction follows the general trend of the data, confirming our initial guesses are in the right ballpark.
 >
@@ -66,7 +72,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 7 — OLS Results (~1 min)
+## Slide 8 — OLS Results (~1 min)
 
 > We estimated the parameters using MATLAB's nlinfit function, which performs nonlinear least squares with the Levenberg-Marquardt algorithm.
 >
@@ -76,7 +82,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 8 — Fitted Curve with CB & PB (~1 min)
+## Slide 9 — Fitted Curve with CB & PB (~1 min)
 
 > This figure shows the fitted curve along with the asymptotic confidence and prediction bands.
 >
@@ -86,7 +92,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 9 — Residual Analysis (~1.5 min)
+## Slide 10 — Residual Analysis (~1.5 min)
 
 > Now let's check whether our model meets the standard statistical assumptions.
 >
@@ -103,7 +109,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 10 — Final SSC (~45 sec)
+## Slide 11 — Final SSC (~45 sec)
 
 > Here we recomputed the Scaled Sensitivity Coefficients using the estimated parameter values, not the initial guesses.
 >
@@ -113,7 +119,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 11 — Optimal Experimental Design (~1 min)
+## Slide 12 — Optimal Experimental Design (~1 min)
 
 > For optimal experimental design, we computed two criteria.
 >
@@ -125,7 +131,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 12 — Bootstrap (~1 min)
+## Slide 13 — Bootstrap (~1 min)
 
 > Finally, we performed a residual resampling bootstrap with 1000 iterations to obtain non-parametric confidence intervals.
 >
@@ -137,7 +143,7 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 13 — Summary & Conclusions (~45 sec)
+## Slide 14 — Summary & Conclusions (~45 sec)
 
 > To summarize:
 >
@@ -151,12 +157,12 @@ Estimated total: ~13 minutes. Each slide ~1 minute unless noted.
 
 ---
 
-## Slide 14 — References (~5 sec)
+## Slide 15 — References (~5 sec)
 
 > Here are our references for your review.
 
 ---
 
-## Slide 15 — Thank You (~5 sec)
+## Slide 16 — Thank You (~5 sec)
 
 > Thank you for your attention. We're happy to take any questions.
