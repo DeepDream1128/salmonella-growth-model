@@ -1,0 +1,24 @@
+# 图片文件（根目录及非 figs 目录）
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.tiff
+
+# 允许 figs 目录下的图片
+!figs/
+!figs/**
+
+# macOS 缓存
+.DS_Store
+
+# MATLAB 缓存
+*.asv
+*.m~
+*.mlx~
+*.slxc
+*.mex*
+codegen/
+slprj/
