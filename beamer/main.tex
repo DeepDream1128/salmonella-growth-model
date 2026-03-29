@@ -7,6 +7,9 @@
 \graphicspath{{./figures/}}
 \zjusectioncolor{blue}
 
+% --- 隐藏顶部 section 导航栏，只保留 frametitle ---
+\setbeamertemplate{headline}{}
+
 \title[SE Growth Model]{Dynamic Predictive Model for Growth of \textit{Salmonella} Enteritidis in Egg Yolk}
 \subtitle{Gompertz Model with Modified Ratkowsky Secondary Model}
 \author[Group X]{Member A, Member B, Member C}
@@ -21,6 +24,7 @@
 \end{frame}
 
 % ==================== Slide 2: Outline ====================
+\section*{}
 \begin{frame}{Outline}
 \tableofcontents
 \end{frame}
@@ -115,18 +119,18 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig01_forward_guess.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,1.} Forward prediction with initial parameter guesses. Black dots: observed; blue line: predicted; red dashed: temperature.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig02_ssc_initial.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,2.} Scaled sensitivity coefficients (SSC) computed with initial guesses. All 5 parameters show distinct patterns.}
 \end{column}
 \end{columns}
 \vspace{0.3em}
-\begin{itemize}
-    \item Initial guesses produce reasonable fit $\rightarrow$ \texttt{nlinfit} can converge
-    \item All 5 parameters show distinct SSC patterns $\rightarrow$ estimable
-    \item $T_{\min}$, $T_{\max}$ have negligible SSC $\rightarrow$ fixed
-\end{itemize}
+{\small $T_{\min}$, $T_{\max}$ have negligible SSC $\rightarrow$ fixed at literature values.}
 \end{frame}
 
 % ==================== Slide 7: OLS Results ====================
@@ -175,23 +179,27 @@ $N$ & 20 \\
 % ==================== Slide 8: CB & PB ====================
 \begin{frame}{Fitted Curve with Confidence \& Prediction Bands}
 \centering
-\includegraphics[width=0.78\linewidth]{fig03_fit_CB_PB.png}
+\includegraphics[width=0.72\linewidth]{fig03_fit_CB_PB.png}
+\vspace{-0.3em}
 
-\vspace{0.3em}
-{\small CB: 95\% band for mean response \hspace{2em} PB: 95\% band for new observation}
+{\scriptsize\textbf{Fig.\,3.} OLS fitted curve (blue) with 95\% asymptotic confidence band (dark shading) and prediction band (light shading). Black dots: observed data; red dashed: sinusoidal temperature profile.}
 \end{frame}
 
 % ==================== Slide 9: Residuals ====================
 \section{Residual Analysis}
 \begin{frame}{Residual Analysis}
 \begin{columns}[T]
-\begin{column}{0.45\textwidth}
+\begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig04_residual_scatter.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,4.} Residuals vs.\ time. Random scatter around zero indicates no systematic bias.}
 \end{column}
-\begin{column}{0.45\textwidth}
+\begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig05_residual_histogram.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,5.} Residual histogram. Approximately bell-shaped, supporting normality assumption.}
 \end{column}
 \end{columns}
 \vspace{0.3em}
@@ -213,11 +221,13 @@ $N$ & 20 \\
 % ==================== Slide 10: Final SSC ====================
 \begin{frame}{Final Scaled Sensitivity Coefficients}
 \begin{columns}[T]
-\begin{column}{0.6\textwidth}
+\begin{column}{0.58\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig06_ssc_final.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,6.} SSC recomputed with estimated parameters. Patterns are consistent with initial SSC, confirming identifiability.}
 \end{column}
-\begin{column}{0.35\textwidth}
+\begin{column}{0.38\textwidth}
 \centering
 {\small
 \begin{tabular}{lr}
@@ -233,7 +243,7 @@ $b$ & \ldots \\
 \end{tabular}}
 
 \vspace{1em}
-SSC patterns consistent with initial guesses $\rightarrow$ all parameters identifiable at solution.
+{\small All parameters remain identifiable at the OLS solution.}
 \end{column}
 \end{columns}
 \end{frame}
@@ -245,18 +255,18 @@ SSC patterns consistent with initial guesses $\rightarrow$ all parameters identi
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig07_delta_criterion.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,7.} Delta criterion $\det(X^TX)$ vs.\ last measurement time. Increasing trend indicates more data improves estimation.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig08_Cii_curves.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,8.} $C_{ii}$ curves (log scale). Decreasing values indicate improved parameter precision with more measurements.}
 \end{column}
 \end{columns}
 \vspace{0.3em}
-\begin{itemize}
-    \item $\det(X^TX)$ increases with time $\rightarrow$ longer experiments provide more information
-    \item $C_{ii}$ decreases $\rightarrow$ parameters become more precise
-    \item Key measurement window: exponential growth phase ($\sim$2--8\,hr)
-\end{itemize}
+{\small Key measurement window: exponential growth phase ($\sim$2--8\,hr).}
 \end{frame}
 
 % ==================== Slide 12: Bootstrap ====================
@@ -295,6 +305,8 @@ Bootstrap PB  & \ldots \\
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig09_bootstrap_CB_PB.png}
+\vspace{-0.5em}
+{\scriptsize\textbf{Fig.\,9.} Bootstrap confidence band (green) and prediction band (pink) from 1000 residual-resampling iterations.}
 \end{column}
 \end{columns}
 \end{frame}
