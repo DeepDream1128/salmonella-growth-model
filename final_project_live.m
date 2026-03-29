@@ -16,6 +16,11 @@
 clear; clc; close all;
 global tTemp
 
+% Create figs folder for saving all figures
+if ~exist('figs', 'dir')
+    mkdir('figs');
+end
+
 %%
 % *Temperature data:* 47 points, sinusoidal profile (~7-43 deg C, 24 h).
 % Time is converted from minutes to hours.
@@ -111,6 +116,7 @@ title('Forward Problem: Y_{pred} with Initial Guesses', 'FontSize', 14);
 legend('Observed', 'Predicted (guess)', 'Temperature', ...
     'Location', 'northwest', 'FontSize', 12);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig01_forward_guess.png');
 
 %% 5. Scaled Sensitivity Coefficients (Initial Guesses)
 % SSC measures how sensitive the model output is to each parameter:
@@ -138,6 +144,7 @@ ylabel('Scaled Sensitivity Coefficient', 'FontSize', 14);
 title('SSC with Initial Parameter Guesses', 'FontSize', 14);
 legend(pnames, 'Location', 'best', 'FontSize', 12);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig02_ssc_initial.png');
 
 %%
 % *SSC analysis results:*
@@ -235,6 +242,7 @@ title('OLS Fit with Confidence and Prediction Bands', 'FontSize', 14);
 legend('Prediction Band', 'Confidence Band', 'Observed', 'Predicted', ...
     'Temperature', 'Location', 'northwest', 'FontSize', 11);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig03_fit_CB_PB.png');
 
 %% 8. Residual Analysis
 % Check the five standard statistical assumptions.
@@ -251,6 +259,7 @@ xlabel('Time (hr)', 'FontSize', 14);
 ylabel('Residual (log_{10} CFU/mL)', 'FontSize', 14);
 title('Residual Scatter Plot', 'FontSize', 14);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig04_residual_scatter.png');
 
 %% 8b. Residual Histogram
 
@@ -260,6 +269,7 @@ xlabel('Residual (log_{10} CFU/mL)', 'FontSize', 14);
 ylabel('Frequency', 'FontSize', 14);
 title('Residual Histogram', 'FontSize', 14);
 set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig05_residual_histogram.png');
 
 %% 8c. Five Standard Statistical Assumptions
 
@@ -312,6 +322,7 @@ ylabel('Scaled Sensitivity Coefficient', 'FontSize', 14);
 title('SSC with Estimated Parameters', 'FontSize', 14);
 legend(pnames, 'Location', 'best', 'FontSize', 12);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig06_ssc_final.png');
 
 fprintf('\n--- SSC (Estimated Parameters) ---\n');
 for j = 1:Np
@@ -357,6 +368,7 @@ xlabel('Last Measurement Time (hr)', 'FontSize', 14);
 ylabel('det(X^TX)', 'FontSize', 14);
 title('Delta Criterion for Optimal Experimental Design', 'FontSize', 14);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig07_delta_criterion.png');
 
 %% 10b. Cii Curves
 
@@ -367,6 +379,7 @@ ylabel('C_{ii}', 'FontSize', 14);
 title('C_{ii} Curves for Optimal Experimental Design', 'FontSize', 14);
 legend(pnames, 'Location', 'best', 'FontSize', 12);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig08_Cii_curves.png');
 
 %% 11. Bootstrap Analysis
 % Residual resampling bootstrap with 1000 iterations.
@@ -440,6 +453,7 @@ title('Bootstrap Confidence and Prediction Bands', 'FontSize', 14);
 legend('Bootstrap PB', 'Bootstrap CB', 'Observed', 'Predicted', ...
     'Temperature', 'Location', 'northwest', 'FontSize', 11);
 grid on; set(gca, 'FontSize', 12);
+saveas(gcf, 'figs/fig09_bootstrap_CB_PB.png');
 
 %%
 % *Comparison of band widths:*
