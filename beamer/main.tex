@@ -165,32 +165,34 @@ $b$ & 0.2621 & 0.2180 & 83.20 & $-$0.2027 & 0.7268 \\
 
 {\scriptsize Table 2. OLS parameter estimates with standard errors and 95\% confidence intervals.}
 
-\vspace{0.5em}
+\vspace{0.8em}
+{\small RMSE = 0.2524 $\log_{10}$ CFU/mL \hspace{2em} Pseudo-$R^2$ = 0.9874 \hspace{2em} MSE = 0.0637 \hspace{2em} $N$ = 20}
+\end{frame}
+
+% ==================== Slide 7b: Correlation ====================
+\begin{frame}{Correlation Matrix}
+\centering
 {\small
 \begin{tabular}{lccccc}
 \toprule
       & $A$ & $C$ & $M$ & $a$ & $b$ \\
 \midrule
 $A$ &  1.000 & $-$0.834 &  0.808 & $-$0.281 &  0.459 \\
-$C$ &        &  1.000 & $-$0.711 &  0.050 & $-$0.312 \\
-$M$ &        &        &  1.000 & $-$0.601 &  0.826 \\
-$a$ &        &        &        &  1.000 & $-$0.930 \\
-$b$ &        &        &        &        &  1.000 \\
-\bottomrule
-\end{tabular}
-\hspace{1.5em}
-\begin{tabular}{lr}
-\toprule
-Metric & Value \\
-\midrule
-RMSE & 0.2524 \\
-Pseudo-$R^2$ & 0.9874 \\
-MSE & 0.0637 \\
-$N$ & 20 \\
+$C$ & $-$0.834 &  1.000 & $-$0.711 &  0.050 & $-$0.312 \\
+$M$ &  0.808 & $-$0.711 &  1.000 & $-$0.601 &  0.826 \\
+$a$ & $-$0.281 &  0.050 & $-$0.601 &  1.000 & $-$0.930 \\
+$b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \bottomrule
 \end{tabular}}
 
-{\scriptsize Table 3. Correlation matrix. \hspace{3em} Table 4. Goodness of fit.}
+{\scriptsize Table 3. Parameter correlation matrix.}
+
+\vspace{1em}
+\begin{itemize}
+    \item Strong correlation between $a$ and $b$ ($-$0.930) --- expected for Ratkowsky coefficients
+    \item $M$ and $b$ also correlated (0.826) --- lag time linked to temperature sensitivity
+    \item High correlations may increase parameter uncertainty but do not prevent estimation
+\end{itemize}
 \end{frame}
 
 % ==================== Slide 8: CB & PB ====================
@@ -350,14 +352,8 @@ Bootstrap PB  & 1.0720 \\
 
 % ==================== Slide 14: References ====================
 \section{References}
-\begin{frame}{References}
-{\small
-\begin{itemize}
-    \item Gumudavelli V et al.\ 2007.\ Dynamic predictive model for growth of \textit{Salmonella} Enteritidis in egg yolk.\ \textit{J.\ Food Sci.}\ 72:M254--62.
-    \item Baranyi J, Roberts TA.\ 1994.\ A dynamic approach to predicting bacterial growth in food.\ \textit{Int J Food Microbiol}\ 23:277--94.
-    \item Zwietering MH et al.\ 1991.\ Modeling of bacterial growth as a function of temperature.\ \textit{Appl Environ Microbiol}\ 57:1094--101.
-    \item Beck JV, Arnold KJ.\ 1977.\ \textit{Parameter Estimation in Engineering and Science}.\ Wiley.
-\end{itemize}}
+\begin{frame}[allowframebreaks]{References}
+\reference
 \end{frame}
 
 % ==================== Slide 15: Thank You ====================
