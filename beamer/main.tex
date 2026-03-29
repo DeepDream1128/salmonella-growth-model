@@ -9,6 +9,14 @@
 \setbeamertemplate{headline}{}
 \setbeamertemplate{caption}[numbered]
 
+% 定义左下角引用命令
+\newcommand{\citefoot}[1]{%
+  \begin{textblock*}{\dimexpr\paperwidth-1.2cm}(0.6cm,\dimexpr\paperheight-0.65cm)
+  {\tiny\color{gray}\raggedright #1}
+  \end{textblock*}
+}
+\usepackage[absolute,overlay]{textpos}
+
 \title[SE Growth Model]{Dynamic Predictive Model for Growth of \textit{Salmonella} Enteritidis in Egg Yolk}
 \subtitle{Gompertz Model with Modified Ratkowsky Secondary Model}
 \author[Group X]{Boyuan Zhao, Wenyu Xu, Yizhou Li}
@@ -48,8 +56,7 @@
 {\footnotesize\textit{Salmonella} bacteria (colorized SEM).\\Source: NIAID/CDC, public domain.}
 \end{column}
 \end{columns}
-\vfill
-{\tiny\color{gray} Gumudavelli et al.\ (2007), \textit{J.\ Food Sci.}\ 72:M254--62;\quad Humphrey (1994), \textit{Int J Food Microbiol}\ 21:31--40.}
+\citefoot{Gumudavelli et al.\ (2007) \textit{J.\ Food Sci.}\ 72:M254--62; Humphrey (1994) \textit{Int J Food Microbiol}\ 21:31--40.}
 \end{frame}
 
 % ==================== Slide 4: Model ====================
@@ -87,8 +94,7 @@ solve numerically with \texttt{ode45}.\\
 Temperature interpolated via \texttt{interp1}.
 \end{column}
 \end{columns}
-\vfill
-{\tiny\color{gray} Zwietering et al.\ (1991), \textit{Appl Environ Microbiol}\ 57:1094--101;\quad Baranyi \& Roberts (1994), \textit{Int J Food Microbiol}\ 23:277--94.}
+\citefoot{Zwietering et al.\ (1991) \textit{Appl Environ Microbiol}\ 57:1094--101; Baranyi \& Roberts (1994) \textit{Int J Food Microbiol}\ 23:277--94.}
 \end{frame}
 
 % ==================== Slide 5: Data & Parameters ====================
@@ -125,8 +131,7 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 {\footnotesize\textbf{Table 1.} Model parameters and initial guesses.}
 \end{column}
 \end{columns}
-\vfill
-{\tiny\color{gray} Data source: Gumudavelli et al.\ (2007), Fig.\,5c --- sinusoidal temperature profile.}
+\citefoot{Gumudavelli et al.\ (2007) \textit{J.\ Food Sci.}\ 72:M254--62, Fig.\,5c.}
 \end{frame}
 
 % ==================== Slide 6: Forward & SSC ====================
@@ -137,21 +142,23 @@ $T_{\max}$ & Max growth temp            & 46.3\,$^\circ$C & Fixed \\
 \centering
 \includegraphics[width=\linewidth]{fig01_forward_guess.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,1.} Forward prediction with initial guesses.\\Black: observed; Blue: predicted; Red: temperature.}
+{\footnotesize\textbf{Fig.\,1.} Forward prediction with initial guesses.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig02_ssc_initial.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,2.} Scaled sensitivity coefficients at initial guesses. All 5 parameters show distinct patterns.}
+{\footnotesize\textbf{Fig.\,2.} Scaled sensitivity coefficients at initial guesses.}
 \end{column}
 \end{columns}
-\vspace{0.2em}
-{\small $T_{\min}$, $T_{\max}$ have negligible SSC $\rightarrow$ fixed at literature values.}
-\vfill
-{\tiny\color{gray} SSC: $\text{SSC}_{ij} = p_j \cdot \partial y_i / \partial p_j$;\quad Beck \& Arnold (1977), Ch.\,5.}
+\vspace{0.3em}
+{\small
+\begin{itemize}
+    \item Initial guesses produce reasonable fit $\rightarrow$ \texttt{nlinfit} can converge
+    \item All 5 parameters show distinct SSC patterns $\rightarrow$ estimable
+    \item $T_{\min}$, $T_{\max}$ have negligible SSC $\rightarrow$ fixed at literature values
+\end{itemize}}
+\citefoot{Beck \& Arnold (1977) \textit{Parameter Estimation in Engineering and Science}, Ch.\,5.}
 \end{frame}
 
 % ==================== Slide 7: OLS Results ====================
@@ -176,8 +183,7 @@ $b$ & 0.2621 & 0.2180 & 83.20 & $-$0.2027 & 0.7268 \\
 
 \vspace{0.6em}
 {\small RMSE = 0.2524 $\log_{10}$ CFU/mL \hspace{2em} Pseudo-$R^2$ = 0.9874 \hspace{2em} MSE = 0.0637 \hspace{2em} $N$ = 20}
-\vfill
-{\tiny\color{gray} Estimated via MATLAB \texttt{nlinfit} (Levenberg--Marquardt);\quad Beck \& Arnold (1977).}
+\citefoot{Beck \& Arnold (1977) \textit{Parameter Estimation in Engineering and Science}.}
 \end{frame}
 
 % ==================== Slide 7b: Correlation ====================
@@ -200,11 +206,12 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 {\footnotesize\textbf{Table 3.} Parameter correlation matrix.}
 
 \vspace{0.8em}
+{\small
 \begin{itemize}
     \item Strong correlation between $a$ and $b$ ($-$0.930) --- expected for Ratkowsky coefficients
     \item $M$ and $b$ also correlated (0.826) --- lag time linked to temperature sensitivity
     \item High correlations may increase uncertainty but do not prevent estimation
-\end{itemize}
+\end{itemize}}
 \end{frame}
 
 % ==================== Slide 8: CB & PB ====================
@@ -212,10 +219,11 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \centering
 \includegraphics[width=0.70\linewidth]{fig03_fit_CB_PB.png}
 \vspace{-0.3em}
+{\footnotesize\textbf{Fig.\,3.} OLS fitted curve with 95\% asymptotic confidence band (dark) and prediction band (light).}
 
-{\footnotesize\textbf{Fig.\,3.} OLS fitted curve with 95\% asymptotic confidence band (dark) and prediction band (light). Black dots: observed; Blue: predicted; Red dashed: temperature.}
-\vfill
-{\tiny\color{gray} CB and PB computed via MATLAB \texttt{nlpredci};\quad Gumudavelli et al.\ (2007).}
+\vspace{0.3em}
+{\small CB = 95\% band for mean response $E[y|t]$; \quad PB = 95\% band for a new observation.}
+\citefoot{Gumudavelli et al.\ (2007) \textit{J.\ Food Sci.}\ 72:M254--62.}
 \end{frame}
 
 % ==================== Slide 9: Residuals ====================
@@ -226,15 +234,13 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \centering
 \includegraphics[width=\linewidth]{fig04_residual_scatter.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,4.} Residuals vs.\ time.\\Random scatter around zero.}
+{\footnotesize\textbf{Fig.\,4.} Residuals vs.\ time. Random scatter around zero.}
 \end{column}
 \begin{column}{0.42\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig05_residual_histogram.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,5.} Residual histogram.\\Approximately bell-shaped.}
+{\footnotesize\textbf{Fig.\,5.} Residual histogram. Approximately bell-shaped.}
 \end{column}
 \end{columns}
 \vspace{0.2em}
@@ -251,7 +257,6 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 5 & Normal distribution   & SW $p$ = 1.0000 ($\checkmark$) \\
 \bottomrule
 \end{tabular}}
-
 \vspace{0.1em}
 {\footnotesize\textbf{Table 4.} Five standard statistical assumptions.}
 \end{frame}
@@ -263,8 +268,7 @@ $b$ &  0.459 & $-$0.312 &  0.826 & $-$0.930 &  1.000 \\
 \centering
 \includegraphics[width=\linewidth]{fig06_ssc_final.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,6.} SSC recomputed with estimated parameters. Patterns consistent with initial SSC.}
+{\footnotesize\textbf{Fig.\,6.} SSC recomputed with estimated parameters.}
 \end{column}
 \begin{column}{0.38\textwidth}
 \centering
@@ -280,16 +284,14 @@ $a$ & 3.0349 \\
 $b$ & 1.3092 \\
 \bottomrule
 \end{tabular}}
-
 \vspace{0.2em}
 {\footnotesize\textbf{Table 5.} Final SSC magnitudes.}
 
 \vspace{0.8em}
-{\small All parameters identifiable at the OLS solution.}
+{\small Patterns consistent with initial SSC. All parameters identifiable at solution.}
 \end{column}
 \end{columns}
-\vfill
-{\tiny\color{gray} Beck \& Arnold (1977), p.\,29--30.}
+\citefoot{Beck \& Arnold (1977) \textit{Parameter Estimation in Engineering and Science}, p.\,29--30.}
 \end{frame}
 
 % ==================== Slide 11: OED ====================
@@ -300,21 +302,23 @@ $b$ & 1.3092 \\
 \centering
 \includegraphics[width=\linewidth]{fig07_delta_criterion.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,7.} Delta criterion $\det(X^TX)$ vs.\ last measurement time. Increasing: more data helps.}
+{\footnotesize\textbf{Fig.\,7.} Delta criterion $\det(X^TX)$ vs.\ last measurement time.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{fig08_Cii_curves.png}
 \vspace{-0.3em}
-
-{\footnotesize\textbf{Fig.\,8.} $C_{ii}$ curves (log scale). Decreasing: parameters become more precise.}
+{\footnotesize\textbf{Fig.\,8.} $C_{ii}$ curves (log scale) vs.\ last measurement time.}
 \end{column}
 \end{columns}
-\vspace{0.2em}
-{\small Key measurement window: exponential growth phase ($\sim$2--8\,hr).}
-\vfill
-{\tiny\color{gray} Beck \& Arnold (1977), p.\,419--443.}
+\vspace{0.3em}
+{\small
+\begin{itemize}
+    \item $\det(X^TX)$ increases with time $\rightarrow$ longer experiments provide more information
+    \item $C_{ii}$ decreases $\rightarrow$ parameters become more precise
+    \item Key measurement window: exponential growth phase ($\sim$2--8\,hr)
+\end{itemize}}
+\citefoot{Beck \& Arnold (1977) \textit{Parameter Estimation in Engineering and Science}, p.\,419--443.}
 \end{frame}
 
 % ==================== Slide 12: Bootstrap ====================
@@ -336,7 +340,6 @@ $a$ & 8.81e-4 & 2.11e-3 & 5.75e-4 & 1.70e-3 \\
 $b$ & 0.065 & --- & $-$0.203 & 0.727 \\
 \bottomrule
 \end{tabular}}
-
 \vspace{0.1em}
 {\footnotesize\textbf{Table 6.} Bootstrap vs.\ asymptotic 95\% CI.}
 
@@ -352,7 +355,6 @@ Asymptotic PB & 1.2042 \\
 Bootstrap PB  & 1.0720 \\
 \bottomrule
 \end{tabular}}
-
 \vspace{0.1em}
 {\footnotesize\textbf{Table 7.} Band width comparison.}
 \end{column}
@@ -360,12 +362,13 @@ Bootstrap PB  & 1.0720 \\
 \centering
 \includegraphics[width=\linewidth]{fig09_bootstrap_CB_PB.png}
 \vspace{-0.3em}
+{\footnotesize\textbf{Fig.\,9.} Bootstrap CB (green) and PB (pink), 1000 iterations.}
 
-{\footnotesize\textbf{Fig.\,9.} Bootstrap CB (green) and PB (pink) from 1000 residual-resampling iterations.}
+\vspace{0.3em}
+{\small Bootstrap bands slightly narrower than asymptotic --- consistent results.}
 \end{column}
 \end{columns}
-\vfill
-{\tiny\color{gray} Residual resampling bootstrap;\quad Beck \& Arnold (1977).}
+\citefoot{Beck \& Arnold (1977) \textit{Parameter Estimation in Engineering and Science}.}
 \end{frame}
 
 % ==================== Slide 13: Summary ====================
