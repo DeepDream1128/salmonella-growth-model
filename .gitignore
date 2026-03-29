@@ -10,6 +10,10 @@
 # 允许 figs 目录下的图片
 !figs/
 !figs/**
+!beamer/figures/
+!beamer/figures/**
+!template/
+!template/**
 
 # macOS 缓存
 .DS_Store
