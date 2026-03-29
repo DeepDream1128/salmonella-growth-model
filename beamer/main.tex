@@ -338,26 +338,27 @@ SSC patterns consistent with initial guesses. All 5 parameters remain identifiab
 \section{Bootstrap}
 \begin{frame}{Bootstrap Analysis ($N=1000$)}
 \begin{columns}[T]
-\begin{column}{0.48\textwidth}
+\begin{column}{0.42\textwidth}
 \centering
-{\footnotesize
+{\scriptsize
 \begin{tabular}{lcccc}
 \toprule
- & \multicolumn{2}{c}{Bootstrap CI} & \multicolumn{2}{c}{Asymptotic CI} \\
-Param & Lower & Upper & Lower & Upper \\
+ & \multicolumn{2}{c}{Boot.\ CI} & \multicolumn{2}{c}{Asym.\ CI} \\
+Param & Lo & Up & Lo & Up \\
 \midrule
 $A$ & 1.600 & 2.741 & 1.860 & 2.943 \\
 $C$ & 5.761 & 7.819 & 5.407 & 7.353 \\
-$M$ & $-$0.624 & 5.388 & $-$0.931 & 6.774 \\
-$a$ & 8.81e-4 & 2.11e-3 & 5.75e-4 & 1.70e-3 \\
-$b$ & 0.065 & --- & $-$0.203 & 0.727 \\
+$M$ & $-$0.62 & 5.388 & $-$0.93 & 6.774 \\
+$a$ & 8.8e-4 & 2.1e-3 & 5.8e-4 & 1.7e-3 \\
+$b$ & 0.065 & --- & $-$0.20 & 0.727 \\
 \bottomrule
 \end{tabular}}
+
 \vspace{0.1em}
 {\footnotesize\textbf{Table 6.} Bootstrap vs.\ asymptotic 95\% CI.}
 
 \vspace{0.3em}
-{\footnotesize
+{\scriptsize
 \begin{tabular}{lc}
 \toprule
 Band & Avg Width \\
@@ -368,19 +369,22 @@ Asymptotic PB & 1.2042 \\
 Bootstrap PB  & 1.0720 \\
 \bottomrule
 \end{tabular}}
+
 \vspace{0.1em}
 {\footnotesize\textbf{Table 7.} Band width comparison.}
 \end{column}
-\begin{column}{0.48\textwidth}
+\begin{column}{0.55\textwidth}
 \centering
-\includegraphics[width=\linewidth]{fig09_bootstrap_CB_PB.png}
+\includegraphics[width=0.92\linewidth]{fig09_bootstrap_CB_PB.png}
 \vspace{-0.3em}
-{\footnotesize\textbf{Fig.\,9.} Bootstrap CB (green) and PB (pink), 1000 iterations.}
 
-\vspace{0.3em}
-{\small Bootstrap bands slightly narrower than asymptotic --- consistent results.}
+{\footnotesize\textbf{Fig.\,9.} Bootstrap CB (green) and PB (pink), 1000 iterations.}
 \end{column}
 \end{columns}
+\vspace{0.2em}
+\begin{block}{Conclusion}
+Bootstrap bands are slightly narrower than asymptotic bands, confirming that the asymptotic approximation is reasonable. Both methods yield consistent uncertainty estimates.
+\end{block}
 \citefoot{Beck \& Arnold (1977) \textit{Parameter Estimation in Engineering and Science}.}
 \end{frame}
 
