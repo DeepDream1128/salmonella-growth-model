@@ -1,119 +1,227 @@
 # Beamer 演讲大纲
 
-基于评分标准（满分 100 分），15 分钟演讲。
+满分 100 分，15 分钟演讲。每页标注插图位置和文字内容。
 
 ---
 
-## Slide 1 — 封面
+## Slide 1 — Title Page
 
+**文字内容：**
 - 标题：Dynamic Predictive Model for Growth of *Salmonella* Enteritidis in Egg Yolk
 - 副标题：Gompertz Model with Modified Ratkowsky Secondary Model
 - 课程：Modeling Methods in Biosystems Engineering, Spring 2026
-- 小组成员
+- 小组成员姓名
 
-## Slide 2 — 背景与目标（5 分）
+**插图：** 无
 
-- 肠炎沙门氏菌（SE）是全球主要食源性致病菌，鸡蛋是主要传播载体
-- SE 穿透蛋壳后在富铁蛋黄中快速增殖
-- USDA-FSIS 要求鸡蛋产后 12 小时内冷却至 ≤ 7.2°C
-- 问题：冷却、储存、运输过程中温度持续波动
-- 目标：建立正弦变温条件下（3–43°C，24 h 周期）SE 在蛋黄中的动态 Gompertz 生长模型
-- 因变量：log₁₀(N) (CFU/mL)；自变量：时间 (hr)
-- 7 个参数（5 个估计，2 个固定）
-- 参考文献：Gumudavelli et al. (2007)
+---
 
-## Slide 3 — 模型描述
+## Slide 2 — Introduction & Background（5 分）
 
-- 一级模型：Gompertz 解析式（恒温）+ 微分形式（变温）
-- 二级模型：修正 Ratkowsky 方程
-- 动态模型：一级 + 二级整合，`ode45` 数值求解
-- 展示公式
+**文字内容（bullet points）：**
+- SE is a leading cause of foodborne illness; shell eggs are a major vehicle
+- SE penetrates shell → grows rapidly in iron-rich yolk
+- USDA requires eggs stored ≤ 7.2°C within 12 h of laying
+- Temperature fluctuates during cooling, storage, and distribution
+- Objective: develop a dynamic Gompertz model for SE growth under sinusoidal temperature (3–43°C)
 
-## Slide 4 — 数据描述
+**插图：** 无（纯文字背景介绍）
 
-- 菌落数据：12 个时间点（0–17 hr），20 个观测值（0–2 hr 单次，3–17 hr 双重复）
-- 温度数据：47 个点，正弦波 ~7–43°C，通过 `interp1` 插值
+---
 
-## Slide 5 — 正向问题 + SSC（10 分）
+## Slide 3 — Model Description
 
-- 图 1：初始猜测值的 Ypred vs 观测数据（含温度曲线）→ `fig01_forward_guess.png`
-- 图 2：初始猜测的缩放灵敏度系数（SSC）→ `fig02_ssc_initial.png`
-- 分析：
-  - 哪些参数可估计，为什么
-  - 参数估计精度排序
-  - Tmin/Tmax 的 SSC 很小 → 固定
+**文字内容：** 左右两栏布局
 
-## Slide 6 — OLS 统计结果（18 分）
+左栏 — Primary Model (Gompertz):
+- 恒温解析式公式
+- 变温微分形式公式
+- 参数说明：A, C, M
 
-- 参数估计表：估计值、标准误、相对误差、95% 置信区间
-- 相关矩阵
-- RMSE、Pseudo-R²
-- 结果解读
+右栏 — Secondary Model (Ratkowsky):
+- 修正 Ratkowsky 公式
+- 参数说明：a, b, Tmin(fixed), Tmax(fixed)
 
-## Slide 7 — 拟合曲线 + CB/PB（12 分）
+底部一行：Dynamic model = Primary + Secondary, solved with `ode45`
 
-- 图 3：观测值（点）、预测值（线）、渐近置信带（CB）、预测带（PB）→ `fig03_fit_CB_PB.png`
-- 右轴温度曲线
-- CB = 均值响应的不确定性；PB = 新观测值的不确定性
-- 使用 `nlpredci` 计算
+**插图：** 无（公式页）
 
-## Slide 8 — 残差分析（12 分）
+---
 
-- 图 4：残差散点图 → `fig04_residual_scatter.png`
-- 图 5：残差直方图 → `fig05_residual_histogram.png`
-- 五项标准统计假设（逐项报告通过/未通过）：
-  1. 模型正确（目视检查）
-  2. 误差随机（Durbin-Watson 统计量）
-  3. 方差齐性（残差图目视）
-  4. 误差不相关（Durbin-Watson）
-  5. 正态分布（Shapiro-Wilk 检验）
+## Slide 4 — Data Description
 
-## Slide 9 — 最终 SSC（7 分）
+**文字内容：** 左右两栏
 
-- 图 6：用估计参数重新计算的 SSC → `fig06_ssc_final.png`
-- 与初始 SSC 对比
-- 确认参数在解处仍可辨识
-- 参数精度排序
+左栏 — Growth Data:
+- 12 time points (0–17 hr), 20 observations
+- 0–2 hr: single measurement; 3–17 hr: duplicates
 
-## Slide 10 — 最优实验设计（8 分）
+右栏 — Temperature Data:
+- 47 points, sinusoidal ~7–43°C, 24 h cycle
+- Interpolated via `interp1`
 
-- 图 7：Delta 准则 det(X'X) vs 最后测量时间 → `fig07_delta_criterion.png`
-- 图 8：Cii 曲线 → `fig08_Cii_curves.png`
-- 解读：最优实验时长、关键测量时间窗口
-- 如果没有明显最优点，解释原因
+**插图：** 无（或可选插入原始数据散点图）
 
-## Slide 11 — Bootstrap（10 分）
+---
 
-- 方法：残差重采样，1000 次迭代
-- 各参数的 Bootstrap 95% CI（与渐近 CI 对比）
-- 图 9：Bootstrap CB 和 PB → `fig09_bootstrap_CB_PB.png`
-- 对比 Bootstrap 与渐近带宽（哪个更宽/更窄）
+## Slide 5 — Parameters & Initial Guesses
 
-## Slide 12 — 总结与结论
+**文字内容：** 参数表格
 
-- 模型拟合良好（RMSE < 0.3 log₁₀ CFU/mL）
-- 5 个估计参数均可辨识
-- 五项统计假设已评估
-- 最优实验设计已分析
-- Bootstrap CI 与渐近 CI 一致
-- 实际意义：可预测鸡蛋冷却/储存/运输过程中的 SE 风险
-- 支持 USDA-FSIS 7.2°C 储存建议
+| Parameter | Description | Initial Guess | Status |
+|-----------|-------------|---------------|--------|
+| A | Initial log₁₀(CFU/mL) | 2.60 | Estimated |
+| C | Growth range | 11 | Estimated |
+| M | Inflection time (hr) | 7.5 | Estimated |
+| a | Ratkowsky coeff | 0.000338 | Estimated |
+| b | Ratkowsky coeff | 0.275 | Estimated |
+| Tmin | Min growth temp | 6°C | Fixed |
+| Tmax | Max growth temp | 46.3°C | Fixed |
 
-## Slide 13 — 参考文献
+**插图：** 无
+
+---
+
+## Slide 6 — Forward Problem（10 分，含 SSC）
+
+**文字内容：**
+- Left: Forward prediction with initial guesses
+- Right: Scaled Sensitivity Coefficients
+
+**插图：** 左右并排
+- 左图：`figs/fig01_forward_guess.png`
+- 右图：`figs/fig02_ssc_initial.png`
+
+**底部说明文字：**
+- Initial guesses produce reasonable fit → suitable for nlinfit convergence
+- All 5 parameters show distinct SSC patterns → estimable
+- Tmin, Tmax have negligible SSC → fixed
+
+---
+
+## Slide 7 — OLS Results（18 分）
+
+**文字内容：** 参数估计结果表格（从 `results/report.txt` 填入）
+
+| Param | Estimate | SE | Rel.Err% | 95% CI |
+|-------|----------|----|----------|--------|
+| A | ... | ... | ...% | [..., ...] |
+| C | ... | ... | ...% | [..., ...] |
+| M | ... | ... | ...% | [..., ...] |
+| a | ... | ... | ...% | [..., ...] |
+| b | ... | ... | ...% | [..., ...] |
+
+底部：RMSE = ..., Pseudo-R² = ...
+
+**插图：** 无（数据表格页）
+
+---
+
+## Slide 8 — Fitted Curve with CB & PB（12 分）
+
+**文字内容：**
+- Confidence Band (CB): 95% band for mean response
+- Prediction Band (PB): 95% band for new observation
+
+**插图：** 居中全幅
+- `figs/fig03_fit_CB_PB.png`
+
+---
+
+## Slide 9 — Residual Analysis（12 分）
+
+**文字内容：** 底部列出五项统计假设通过/未通过
+
+**插图：** 左右并排
+- 左图：`figs/fig04_residual_scatter.png`
+- 右图：`figs/fig05_residual_histogram.png`
+
+**底部说明文字：**
+1. Model correct: ✓ (visual)
+2. Errors random: DW = ... (✓/✗)
+3. Constant variance: ✓ (visual)
+4. Errors uncorrelated: see DW
+5. Normal distribution: SW p = ... (✓/✗)
+
+---
+
+## Slide 10 — Final SSC（7 分）
+
+**文字内容：**
+- SSC recomputed with estimated parameters
+- Confirms identifiability at solution
+
+**插图：** 居中全幅
+- `figs/fig06_ssc_final.png`
+
+**底部说明文字：**
+- Parameter accuracy ranking: (from report.txt)
+
+---
+
+## Slide 11 — Optimal Experimental Design（8 分）
+
+**文字内容：**
+- Delta criterion: det(X'X) measures information content
+- Cii: diagonal of (X'X)⁻¹, proportional to parameter variance
+
+**插图：** 左右并排
+- 左图：`figs/fig07_delta_criterion.png`
+- 右图：`figs/fig08_Cii_curves.png`
+
+**底部说明文字：**
+- Interpretation of optimal experiment duration
+
+---
+
+## Slide 12 — Bootstrap（10 分）
+
+**文字内容：**
+- Method: residual resampling, N = 1000
+- Bootstrap vs Asymptotic CI comparison table (from report.txt)
+- Band width comparison
+
+**插图：** 右侧或下方
+- `figs/fig09_bootstrap_CB_PB.png`
+
+---
+
+## Slide 13 — Summary & Conclusions
+
+**文字内容（bullet points）：**
+- Dynamic Gompertz model successfully developed
+- 5 parameters estimated, 2 fixed; RMSE < 0.3 log₁₀ CFU/mL
+- All statistical assumptions evaluated
+- Bootstrap CIs consistent with asymptotic CIs
+- Model supports USDA-FSIS 7.2°C storage recommendation
+
+**插图：** 无
+
+---
+
+## Slide 14 — References
 
 - Gumudavelli et al. (2007), J. Food Sci. 72:M254–62
 - Baranyi & Roberts (1994), Int J Food Microbiol 23:277–94
 - Zwietering et al. (1991), Appl Environ Microbiol 57:1094–101
 - Beck & Arnold (1977), Parameter Estimation in Engineering and Science
 
+**插图：** 无
+
 ---
 
-## 演讲注意事项（演讲质量 10 分）
+## Slide 15 — Thank You / Questions
+
+**文字内容：** Thank You! Questions?
+
+**插图：** 无
+
+---
+
+## 演讲注意事项（10 分）
 
 - 图表：大标记、粗线条、大字号坐标轴
-- 每页 slide 文字尽量少，图为主
-- 少用图例，能标注就标注
+- 每页 slide 文字尽量少
 - 所有图必须让观众看清楚
-- 语速适中，重点强调
 - 所有组员都要上台讲
 - 总时长不超过 15 分钟
