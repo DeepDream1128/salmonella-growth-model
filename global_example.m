@@ -368,7 +368,139 @@ fprintf('  Bootstrap  CB width: %.4f\n', mean(CB_boot_hi - CB_boot_lo));
 fprintf('  Asymptotic PB width: %.4f\n', mean(PB_upper - PB_lower));
 fprintf('  Bootstrap  PB width: %.4f\n', mean(PB_boot_hi - PB_boot_lo));
 
-fprintf('\nDone. All figures saved to figs/ folder.\n');
+%% ==================== 11. Export Results ====================
+% Save all numerical results to results/ folder
+
+if ~exist('results', 'dir')
+    mkdir('results');
+end
+
+% --- 11a. Text report ---
+fid = fopen('results/report.txt', 'w');
+fprintf(fid, '==========================================================\n');
+fprintf(fid, ' Final Project Results Report\n');
+fprintf(fid, ' Dynamic Gompertz Model for Salmonella Enteritidis\n');
+fprintf(fid, ' Generated: %s\n', datestr(now));
+fprintf(fid, '==========================================================\n\n');
+
+fprintf(fid, '--- Data Summary ---\n');
+fprintf(fid, '  Growth data points:  %d\n', Ndata);
+fprintf(fid, '  Time range:          %.1f - %.1f hr\n', min(tobs), max(tobs));
+fprintf(fid, '  Temp data points:    %d\n', size(tTemp, 1));
+fprintf(fid, '  Temp range:          %.1f - %.1f deg C\n\n', min(tTemp(:,2)), max(tTemp(:,2)));
+
+fprintf(fid, '--- Initial Guesses ---\n');
+for j = 1:Np
+    fprintf(fid, '  %s = %.6f\n', pnames{j}, beta0(j));
+end
+fprintf(fid, '  Tmin = 6.0 (fixed)\n');
+fprintf(fid, '  Tmax = 46.3 (fixed)\n\n');
+
+fprintf(fid, '--- SSC (Initial Guesses) ---\n');
+for j = 1:Np
+    fprintf(fid, '  %5s: max|SSC| = %.4f\n', pnames{j}, max(abs(SSC0(:,j))));
+end
+fprintf(fid, '\n');
+
+fprintf(fid, '--- Estimated Parameters ---\n');
+fprintf(fid, '  %-5s  %12s  %10s  %10s  %24s\n', 'Param', 'Estimate', 'SE', 'RelErr%', '95% CI');
+fprintf(fid, '  %s\n', repmat('-', 1, 70));
+for j = 1:Np
+    fprintf(fid, '  %-5s  %12.6f  %10.6f  %9.2f%%  [%10.6f, %10.6f]\n', ...
+        pnames{j}, beta(j), se(j), rel_err(j), ci(j,1), ci(j,2));
+end
+fprintf(fid, '  Tmin = 6.0 (fixed),  Tmax = 46.3 (fixed)\n\n');
+
+fprintf(fid, '--- Correlation Matrix ---\n');
+fprintf(fid, '       ');
+for j = 1:Np; fprintf(fid, '  %7s', pnames{j}); end; fprintf(fid, '\n');
+for i = 1:Np
+    fprintf(fid, '  %-5s', pnames{i});
+    for j = 1:Np
+        fprintf(fid, '  %7.3f', Corr(i,j));
+    end
+    fprintf(fid, '\n');
+end
+fprintf(fid, '\n');
+
+fprintf(fid, '--- Goodness of Fit ---\n');
+fprintf(fid, '  RMSE      = %.4f log10 CFU/mL\n', RMSE);
+fprintf(fid, '  Pseudo-R2 = %.4f\n', R2);
+fprintf(fid, '  MSE       = %.6f\n\n', MSE);
+
+fprintf(fid, '--- Statistical Assumptions ---\n');
+fprintf(fid, '  1. Model correct:       Visual check\n');
+fprintf(fid, '  2. Errors random:       Durbin-Watson = %.4f\n', DW);
+fprintf(fid, '  3. Constant variance:   Visual check\n');
+fprintf(fid, '  4. Errors uncorrelated: See Durbin-Watson\n');
+fprintf(fid, '  5. Normal distribution: Shapiro-Wilk p = %.4f\n\n', p_sw);
+
+fprintf(fid, '--- SSC (Estimated Parameters) ---\n');
+for j = 1:Np
+    fprintf(fid, '  %5s: max|SSC| = %.4f\n', pnames{j}, max(abs(SSC_final(:,j))));
+end
+fprintf(fid, '\n');
+
+fprintf(fid, '--- Bootstrap 95%% CI (N=%d) ---\n', Nboot);
+fprintf(fid, '  %-5s  %12s  %24s  %24s\n', 'Param', 'Estimate', 'Bootstrap 95% CI', 'Asymptotic 95% CI');
+fprintf(fid, '  %s\n', repmat('-', 1, 78));
+for j = 1:Np
+    fprintf(fid, '  %-5s  %12.6f  [%10.6f, %10.6f]  [%10.6f, %10.6f]\n', ...
+        pnames{j}, beta(j), ci_boot(j,1), ci_boot(j,2), ci(j,1), ci(j,2));
+end
+fprintf(fid, '\n');
+
+fprintf(fid, '--- Band Width Comparison ---\n');
+fprintf(fid, '  Asymptotic CB width: %.4f\n', mean(CB_upper - CB_lower));
+fprintf(fid, '  Bootstrap  CB width: %.4f\n', mean(CB_boot_hi - CB_boot_lo));
+fprintf(fid, '  Asymptotic PB width: %.4f\n', mean(PB_upper - PB_lower));
+fprintf(fid, '  Bootstrap  PB width: %.4f\n', mean(PB_boot_hi - PB_boot_lo));
+
+fclose(fid);
+fprintf('\nResults report saved to results/report.txt\n');
+
+% --- 11b. Excel export ---
+% Sheet 1: Parameter estimates
+param_table = table(pnames', beta', se, rel_err, ci(:,1), ci(:,2), ...
+    ci_boot(:,1), ci_boot(:,2), ...
+    'VariableNames', {'Parameter','Estimate','SE','RelErr_pct', ...
+    'CI95_Lo','CI95_Hi','Boot95_Lo','Boot95_Hi'});
+writetable(param_table, 'results/results.xlsx', 'Sheet', 'Parameters');
+
+% Sheet 2: Goodness of fit
+fit_table = table({'RMSE'; 'Pseudo_R2'; 'MSE'; 'DW'; 'SW_p'}, ...
+    [RMSE; R2; MSE; DW; p_sw], ...
+    'VariableNames', {'Metric', 'Value'});
+writetable(fit_table, 'results/results.xlsx', 'Sheet', 'GoodnessOfFit');
+
+% Sheet 3: Correlation matrix
+corr_table = array2table(Corr, 'VariableNames', pnames, 'RowNames', pnames);
+writetable(corr_table, 'results/results.xlsx', 'Sheet', 'CorrelationMatrix', ...
+    'WriteRowNames', true);
+
+% Sheet 4: Observed vs Predicted
+obs_pred_table = table(tobs, yobs, logN_pred_data, res_plot, ...
+    'VariableNames', {'Time_hr', 'Observed_log10', 'Predicted_log10', 'Residual'});
+writetable(obs_pred_table, 'results/results.xlsx', 'Sheet', 'ObsVsPred');
+
+% Sheet 5: SSC initial
+ssc0_table = array2table([tobs, SSC0], 'VariableNames', [{'Time_hr'}, pnames]);
+writetable(ssc0_table, 'results/results.xlsx', 'Sheet', 'SSC_Initial');
+
+% Sheet 6: SSC final
+sscf_table = array2table([tobs, SSC_final], 'VariableNames', [{'Time_hr'}, pnames]);
+writetable(sscf_table, 'results/results.xlsx', 'Sheet', 'SSC_Final');
+
+% Sheet 7: Band widths
+band_table = table({'Asymptotic_CB'; 'Bootstrap_CB'; 'Asymptotic_PB'; 'Bootstrap_PB'}, ...
+    [mean(CB_upper-CB_lower); mean(CB_boot_hi-CB_boot_lo); ...
+     mean(PB_upper-PB_lower); mean(PB_boot_hi-PB_boot_lo)], ...
+    'VariableNames', {'Band', 'AvgWidth'});
+writetable(band_table, 'results/results.xlsx', 'Sheet', 'BandWidths');
+
+fprintf('Results data saved to results/results.xlsx\n');
+
+fprintf('\nDone. All figures saved to figs/, all results saved to results/.\n');
 
 %% ==================== Shapiro-Wilk Test ====================
 function [H, pValue] = swtest(x)
