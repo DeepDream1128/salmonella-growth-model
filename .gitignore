@@ -39,3 +39,8 @@
 *.mex*
 codegen/
 slprj/
+
+# 项目特定文件
+final_project_live.m
+final_project_live.mlx
+final_project.m
