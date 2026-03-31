@@ -37,11 +37,11 @@ Ndata = length(tobs);
 fprintf('Growth data: %d points\n', Ndata);
 
 %% ==================== 2. Initial Guesses ====================
-% beta = [A, C, M, a, b]
-% Fixed: Tmin = 6, Tmax = 46.3
-beta0 = [log10(400), 11, 7.5, 0.000338, 0.275];
+% beta = [A, C, M, a, b, Tmax]
+% Fixed: Tmin = 6
+beta0 = [log10(400), 11, 7.5, 0.000338, 0.275, 46.3];
 Np = length(beta0);
-pnames = {'A','C','M','a','b'};
+pnames = {'A','C','M','a','b','T_{max}'};
 
 %% ==================== 3. Forward Problem: Ypred with Guesses ====================
 t_fine = linspace(0, max(tobs), 500)';
@@ -66,32 +66,55 @@ grid on;
 set(gca, 'FontSize', 12);
 saveas(gcf, 'figs/fig01_forward_guess.png');
 
-%% ==================== 4. SSC with Initial Guesses ====================
-logN_base = gompertzFOR(beta0, tobs);
-SSC0 = zeros(Ndata, Np);
-delta = 1e-4;
-for j = 1:Np
-    bp = beta0;
-    dp = max(abs(beta0(j)) * delta, 1e-10);
-    bp(j) = beta0(j) + dp;
-    logN_pert = gompertzFOR(bp, tobs);
-    SSC0(:, j) = beta0(j) * (logN_pert - logN_base) / dp;
-end
+%% ==================== 4. SSC with Initial Guesses (all 7 params) ====================
+% Include Tmin to show it is NOT estimable (SSC ≈ 0)
+% Using SSC_V3 method (multiplicative perturbation, same as inv_soln5_code.m)
+beta0_full = [beta0(1:5), 6, beta0(6)];   % [A, C, M, a, b, Tmin, Tmax]
+Np_full = length(beta0_full);
+pnames_full = {'A','C','M','a','b','T_{min}','T_{max}'};
 
-figure('Name','SSC with Initial Guesses');
-plot(tobs, SSC0, 'o-', 'LineWidth', 1.5, 'MarkerSize', 6);
+SSC0_full = SSC_V3(beta0_full, tobs, @gompertzFOR7);
+logN_base = gompertzFOR7(beta0_full, tobs);  % for plotting Y_pred on right axis
+
+figure('Name','SSC with Initial Guesses (All 7 Parameters)');
+% Left y-axis: SSC curves
+yyaxis left
+hold on;
+% Plot the 6 estimable parameters with solid lines and markers
+styles_est = {'o-','s-','d-','^-','v-','p-'};
+colors_est = lines(7);
+h_ssc = gobjects(1, Np_full + 1);  % handles for legend
+for j = [1:5, 7]  % A,C,M,a,b,Tmax (estimable)
+    h_ssc(j) = plot(tobs, SSC0_full(:,j), styles_est{min(j,6)}, 'LineWidth', 1.5, ...
+        'MarkerSize', 6, 'Color', colors_est(j,:));
+end
+% Plot Tmin with dashed line to highlight it is negligible
+h_ssc(6) = plot(tobs, SSC0_full(:,6), 'x--', 'LineWidth', 2, 'MarkerSize', 8, ...
+    'Color', [0.5 0.5 0.5]);
+hold off;
+ylabel('Scaled Sensitivity Coefficient  \beta_i \cdot \partialY/\partial\beta_i', 'FontSize', 14);
+
+% Right y-axis: Y_predicted
+yyaxis right
+h_ssc(8) = plot(tobs, logN_base, 'k-', 'LineWidth', 2.5);
+ylabel('Y_{pred}  (log_{10} CFU/mL)', 'FontSize', 14);
+
 xlabel('Time (hr)', 'FontSize', 14);
-ylabel('Scaled Sensitivity Coefficient', 'FontSize', 14);
-title('SSC with Initial Parameter Guesses', 'FontSize', 14);
-legend(pnames, 'Location', 'northeast', 'FontSize', 12);
+title('SSC with Initial Guesses — All 7 Parameters (SSC\_V3 method)', 'FontSize', 14);
+legend(h_ssc, [pnames_full, {'Y_{pred}'}], 'Location', 'best', 'FontSize', 11);
 grid on;
 set(gca, 'FontSize', 12);
 saveas(gcf, 'figs/fig02_ssc_initial.png');
 
-fprintf('\n--- SSC (Initial Guesses) ---\n');
-for j = 1:Np
-    fprintf('  %5s: max|SSC| = %.4f\n', pnames{j}, max(abs(SSC0(:,j))));
+fprintf('\n--- SSC (Initial Guesses, all 7 params) ---\n');
+for j = 1:Np_full
+    fprintf('  %7s: max|SSC| = %.6f\n', pnames_full{j}, max(abs(SSC0_full(:,j))));
 end
+fprintf('  → T_min has negligible SSC → fixed (not estimable)\n');
+fprintf('  → T_max is estimable → included in parameter estimation\n');
+
+% Keep 6-param SSC for later use (results export, Section 8 comparison)
+SSC0 = SSC0_full(:, [1:5, 7]);
 
 %% ==================== 5. OLS Parameter Estimation ====================
 opts = statset('MaxIter', 500, 'TolFun', 1e-10, 'TolX', 1e-10);
@@ -108,7 +131,7 @@ for j = 1:Np
     fprintf('  %-5s  %12.6f  %10.6f  %9.2f%%  [%10.6f, %10.6f]\n', ...
         pnames{j}, beta(j), se(j), rel_err(j), ci(j,1), ci(j,2));
 end
-fprintf('  Tmin = 6.0 (fixed),  Tmax = 46.3 (fixed)\n');
+fprintf('  Tmin = 6.0 (fixed)\n');
 
 % Correlation matrix
 Corr = COVB ./ (se * se');
@@ -217,22 +240,32 @@ else
 end
 
 %% ==================== 8. Final SSC (Estimated Parameters) ====================
+% Using SSC_V3 method (multiplicative perturbation, same as inv_soln5_code.m)
+SSC_final = SSC_V3(beta, tobs, @gompertzFOR);
 logN_base_final = gompertzFOR(beta, tobs);
-SSC_final = zeros(Ndata, Np);
-for j = 1:Np
-    bp = beta;
-    dp = max(abs(beta(j)) * delta, 1e-10);
-    bp(j) = beta(j) + dp;
-    logN_pert = gompertzFOR(bp, tobs);
-    SSC_final(:, j) = beta(j) * (logN_pert - logN_base_final) / dp;
-end
 
 figure('Name','Final SSC');
-plot(tobs, SSC_final, 'o-', 'LineWidth', 1.5, 'MarkerSize', 6);
+% Left y-axis: SSC curves with distinct styles
+yyaxis left
+hold on;
+styles_final = {'o-','s-','d-','^-','v-','p-'};
+colors_final = lines(6);
+h_ssc_f = gobjects(1, Np + 1);
+for j = 1:Np
+    h_ssc_f(j) = plot(tobs, SSC_final(:,j), styles_final{j}, 'LineWidth', 1.5, ...
+        'MarkerSize', 6, 'Color', colors_final(j,:));
+end
+hold off;
+ylabel('Scaled Sensitivity Coefficient  \beta_i \cdot \partialY/\partial\beta_i', 'FontSize', 14);
+
+% Right y-axis: Y_predicted
+yyaxis right
+h_ssc_f(Np+1) = plot(tobs, logN_base_final, 'k-', 'LineWidth', 2.5);
+ylabel('Y_{pred}  (log_{10} CFU/mL)', 'FontSize', 14);
+
 xlabel('Time (hr)', 'FontSize', 14);
-ylabel('Scaled Sensitivity Coefficient', 'FontSize', 14);
-title('SSC with Estimated Parameters', 'FontSize', 14);
-legend(pnames, 'Location', 'northeast', 'FontSize', 12);
+title('SSC with Estimated Parameters (SSC\_V3 method)', 'FontSize', 14);
+legend(h_ssc_f, [pnames, {'Y_{pred}'}], 'Location', 'best', 'FontSize', 12);
 grid on;
 set(gca, 'FontSize', 12);
 saveas(gcf, 'figs/fig06_ssc_final.png');
@@ -242,15 +275,16 @@ saveas(gcf, 'figs/fig06_ssc_final.png');
 % Cii curves: diagonal of (X'X)^-1 as function of measurement time
 
 % Compute sensitivity matrix X at estimated parameters on a fine grid
+% Use same perturbation method as SSC_V3 (multiplicative, d=0.001)
 t_design = linspace(0, max(tobs), 200)';
 logN_base_d = gompertzFOR(beta, t_design);
+d_oed = 0.001;
 X_full = zeros(length(t_design), Np);
 for j = 1:Np
     bp = beta;
-    dp = max(abs(beta(j)) * delta, 1e-10);
-    bp(j) = beta(j) + dp;
+    bp(j) = beta(j) * (1 + d_oed);
     logN_pert = gompertzFOR(bp, t_design);
-    X_full(:, j) = (logN_pert - logN_base_d) / dp;
+    X_full(:, j) = (logN_pert - logN_base_d) / (beta(j) * d_oed);  % unscaled: dY/dbeta_j
 end
 
 % Delta criterion: add measurements one at a time, compute det(X'X)
@@ -393,13 +427,14 @@ fprintf(fid, '--- Initial Guesses ---\n');
 for j = 1:Np
     fprintf(fid, '  %s = %.6f\n', pnames{j}, beta0(j));
 end
-fprintf(fid, '  Tmin = 6.0 (fixed)\n');
-fprintf(fid, '  Tmax = 46.3 (fixed)\n\n');
+fprintf(fid, '  Tmin = 6.0 (fixed)\n\n');
 
-fprintf(fid, '--- SSC (Initial Guesses) ---\n');
-for j = 1:Np
-    fprintf(fid, '  %5s: max|SSC| = %.4f\n', pnames{j}, max(abs(SSC0(:,j))));
+fprintf(fid, '--- SSC (Initial Guesses, all 7 params) ---\n');
+for j = 1:Np_full
+    fprintf(fid, '  %7s: max|SSC| = %.6f\n', pnames_full{j}, max(abs(SSC0_full(:,j))));
 end
+fprintf(fid, '  → T_min has negligible SSC → fixed (not estimable)\n');
+fprintf(fid, '  → T_max is estimable → included in parameter estimation\n');
 fprintf(fid, '\n');
 
 fprintf(fid, '--- Estimated Parameters ---\n');
@@ -409,7 +444,7 @@ for j = 1:Np
     fprintf(fid, '  %-5s  %12.6f  %10.6f  %9.2f%%  [%10.6f, %10.6f]\n', ...
         pnames{j}, beta(j), se(j), rel_err(j), ci(j,1), ci(j,2));
 end
-fprintf(fid, '  Tmin = 6.0 (fixed),  Tmax = 46.3 (fixed)\n\n');
+fprintf(fid, '  Tmin = 6.0 (fixed)\n\n');
 
 fprintf(fid, '--- Correlation Matrix ---\n');
 fprintf(fid, '       ');
@@ -474,7 +509,8 @@ fit_table = table({'RMSE'; 'Pseudo_R2'; 'MSE'; 'DW'; 'SW_p'}, ...
 writetable(fit_table, 'results/results.xlsx', 'Sheet', 'GoodnessOfFit');
 
 % Sheet 3: Correlation matrix
-corr_table = array2table(Corr, 'VariableNames', pnames, 'RowNames', pnames);
+pnames_safe = {'A','C','M','a','b','Tmax'};  % no special chars for table
+corr_table = array2table(Corr, 'VariableNames', pnames_safe, 'RowNames', pnames_safe);
 writetable(corr_table, 'results/results.xlsx', 'Sheet', 'CorrelationMatrix', ...
     'WriteRowNames', true);
 
@@ -483,8 +519,9 @@ obs_pred_table = table(tobs, yobs, logN_pred_data, res_plot, ...
     'VariableNames', {'Time_hr', 'Observed_log10', 'Predicted_log10', 'Residual'});
 writetable(obs_pred_table, 'results/results.xlsx', 'Sheet', 'ObsVsPred');
 
-% Sheet 5: SSC initial
-ssc0_table = array2table([tobs, SSC0], 'VariableNames', [{'Time_hr'}, pnames]);
+% Sheet 5: SSC initial (all 7 params)
+pnames_full_safe = {'A','C','M','a','b','Tmin','Tmax'};  % no special chars for table
+ssc0_table = array2table([tobs, SSC0_full], 'VariableNames', [{'Time_hr'}, pnames_full_safe]);
 writetable(ssc0_table, 'results/results.xlsx', 'Sheet', 'SSC_Initial');
 
 % Sheet 6: SSC final
@@ -532,8 +569,8 @@ function y = gompertzINV(beta, t)
     M    = beta(3);
     a    = beta(4);
     b    = beta(5);
+    Tmax = beta(6);
     Tmin = 6;       % fixed
-    Tmax = 46.3;    % fixed
 
     % unique times for ode45 (handles duplicate times from replicates)
     [t_unique, ~, ic] = unique(t);
@@ -576,8 +613,70 @@ function y = gompertzFOR(beta, t)
     M    = beta(3);
     a    = beta(4);
     b    = beta(5);
+    Tmax = beta(6);
     Tmin = 6;
-    Tmax = 46.3;
+
+    [t_unique, ~, ic] = unique(t);
+
+    T0 = interp1(tTemp(:,1), tTemp(:,2), 0, 'linear', 'extrap');
+    mu0 = a * (T0 - Tmin)^2 * (1 - exp(b * (T0 - Tmax)));
+    if mu0 > 0
+        y0 = A + C * exp(-exp(mu0 * exp(1) * M / C + 1));
+    else
+        y0 = A;
+    end
+
+    [~, y_sol] = ode45(@ff, t_unique, y0);
+    y = y_sol(ic);
+    y = max(y, A);
+    y = min(y, A + C);
+
+    function dydt = ff(t, y)
+        T = interp1(tTemp(:,1), tTemp(:,2), t, 'linear', 'extrap');
+        if T <= Tmin || T >= Tmax
+            mu = 0;
+        else
+            mu = a * (T - Tmin)^2 * (1 - exp(b * (T - Tmax)));
+        end
+        ratio = (y - A) / C;
+        if ratio <= 1e-15 || ratio >= (1 - 1e-15)
+            dydt = 0;
+        else
+            dydt = -mu * exp(1) * ratio * log(ratio);
+        end
+    end
+end
+
+%% ==================== SSC_V3: Scaled Sensitivity Coefficients (forward-difference) ====================
+function Xp = SSC_V3(beta, x, yfunc)
+%Computes scaled sensitivity coefficients = Xp, n x p matrix
+%Uses forward-difference (multiplicative perturbation)
+%  SSC_i = beta_i * dY/dbeta_i ≈ (Y(beta_i*(1+d)) - Y(beta)) / d
+%beta is the parameter vector
+%x are the independent variables
+%yfunc is the forward-problem function handle
+d = 0.001;
+ypred = yfunc(beta, x);
+for i = 1:length(beta)
+    betain = beta;
+    betain(i) = beta(i) * (1 + d);
+    yhat{i} = yfunc(betain, x);
+    SSC{i} = (yhat{i} - ypred) / d;
+    Xp(:, i) = SSC{i};
+end
+end
+
+%% ==================== FORWARD function with 7 params (for SSC of all params) ====================
+function y = gompertzFOR7(beta7, t)
+    % beta7 = [A, C, M, a, b, Tmin, Tmax]
+    global tTemp
+    A    = beta7(1);
+    C    = beta7(2);
+    M    = beta7(3);
+    a    = beta7(4);
+    b    = beta7(5);
+    Tmin = beta7(6);
+    Tmax = beta7(7);
 
     [t_unique, ~, ic] = unique(t);
 

@@ -1,7 +1,7 @@
 ==========================================================
  Final Project Results Report
  Dynamic Gompertz Model for Salmonella Enteritidis
- Generated: 30-Mar-2026 23:02:08
+ Generated: 31-Mar-2026 22:56:26
 ==========================================================
 
 --- Data Summary ---
@@ -16,64 +16,72 @@
   M = 7.500000
   a = 0.000338
   b = 0.275000
+  T_{max} = 46.300000
   Tmin = 6.0 (fixed)
-  Tmax = 46.3 (fixed)
 
---- SSC (Initial Guesses) ---
-      A: max|SSC| = 2.6021
-      C: max|SSC| = 0.7245
-      M: max|SSC| = 0.7740
-      a: max|SSC| = 1.6354
-      b: max|SSC| = 0.6803
+--- SSC (Initial Guesses, all 7 params) ---
+        A: max|SSC| = 2.602060
+        C: max|SSC| = 0.724513
+        M: max|SSC| = 0.773971
+        a: max|SSC| = 1.635599
+        b: max|SSC| = 0.679892
+  T_{min}: max|SSC| = 0.575790
+  T_{max}: max|SSC| = 6.448772
+  → T_min has negligible SSC → fixed (not estimable)
+  → T_max is estimable → included in parameter estimation
 
 --- Estimated Parameters ---
   Param      Estimate          SE     RelErr%                    95% CI
   ----------------------------------------------------------------------
-  A          2.401127    0.253995      10.58%  [  1.859749,   2.942505]
-  C          6.379779    0.456524       7.16%  [  5.406721,   7.352837]
-  M          2.921277    1.807358      61.87%  [ -0.931016,   6.773570]
-  a          0.001135    0.000263      23.15%  [  0.000575,   0.001695]
-  b          0.262068    0.218044      83.20%  [ -0.202682,   0.726817]
-  Tmin = 6.0 (fixed),  Tmax = 46.3 (fixed)
+  A          2.502228    0.174297       6.97%  [-35629088882.477303, 35629088887.481758]
+  C          6.205121    0.349666       5.64%  [  2.303247,  10.106995]
+  M          4.536583    0.982241      21.65%  [ -2.202059,  11.275225]
+  a          0.000981    0.000085       8.65%  [  0.000543,   0.001420]
+  b          1.963574    0.000000       0.00%  [-5411237970496872627418309836406784.000000, 5411237970496872627418309836406784.000000]
+  T_{max}     58.434842    0.000000       0.00%  [-5411237970496873780339814443253760.000000, 5411237970496873780339814443253760.000000]
+  Tmin = 6.0 (fixed)
 
 --- Correlation Matrix ---
-               A        C        M        a        b
-  A        1.000   -0.834    0.808   -0.281    0.459
-  C       -0.834    1.000   -0.711    0.050   -0.312
-  M        0.808   -0.711    1.000   -0.601    0.826
-  a       -0.281    0.050   -0.601    1.000   -0.930
-  b        0.459   -0.312    0.826   -0.930    1.000
+               A        C        M        a        b  T_{max}
+  A        1.000   -0.756    0.756    0.336      NaN      NaN
+  C       -0.756    1.000   -0.788   -0.633      NaN      NaN
+  M        0.756   -0.788    1.000    0.830      NaN      NaN
+  a        0.336   -0.633    0.830    1.000      NaN      NaN
+  b          NaN      NaN      NaN      NaN      NaN      NaN
+  T_{max}      NaN      NaN      NaN      NaN      NaN      NaN
 
 --- Goodness of Fit ---
-  RMSE      = 0.2524 log10 CFU/mL
-  Pseudo-R2 = 0.9874
-  MSE       = 0.063711
+  RMSE      = 0.2506 log10 CFU/mL
+  Pseudo-R2 = 0.9868
+  MSE       = 0.062788
 
 --- Statistical Assumptions ---
   1. Model correct:       Visual check
-  2. Errors random:       Durbin-Watson = 1.3149
+  2. Errors random:       Durbin-Watson = 1.2815
   3. Constant variance:   Visual check
   4. Errors uncorrelated: See Durbin-Watson
   5. Normal distribution: Shapiro-Wilk p = 1.0000
 
 --- SSC (Estimated Parameters) ---
-      A: max|SSC| = 2.4649
-      C: max|SSC| = 4.2172
-      M: max|SSC| = 1.1521
-      a: max|SSC| = 3.0349
-      b: max|SSC| = 1.3092
+      A: max|SSC| = 2.5022
+      C: max|SSC| = 4.3253
+      M: max|SSC| = 1.6032
+      a: max|SSC| = 2.9997
+      b: max|SSC| = 0.0000
+  T_{max}: max|SSC| = 0.0000
 
 --- Bootstrap 95% CI (N=1000) ---
   Param      Estimate          Bootstrap 95% CI         Asymptotic 95% CI
   ------------------------------------------------------------------------------
-  A          2.401127  [  1.599580,   2.741400]  [  1.859749,   2.942505]
-  C          6.379779  [  5.761419,   7.819361]  [  5.406721,   7.352837]
-  M          2.921277  [ -0.623938,   5.388463]  [ -0.931016,   6.773570]
-  a          0.001135  [  0.000881,   0.002105]  [  0.000575,   0.001695]
-  b          0.262068  [  0.065056, 2811.512007]  [ -0.202682,   0.726817]
+  A          2.502228  [  2.140569,   2.773944]  [-35629088882.477303, 35629088887.481758]
+  C          6.205121  [  5.721865,   7.093345]  [  2.303247,  10.106995]
+  M          4.536583  [  2.068335,   5.874577]  [ -2.202059,  11.275225]
+  a          0.000981  [  0.000840,   0.001138]  [  0.000543,   0.001420]
+  b          1.963574  [  1.238844, 88771497.555350]  [-5411237970496872627418309836406784.000000, 5411237970496872627418309836406784.000000]
+  T_{max}     58.434842  [ 58.434842,  58.434842]  [-5411237970496873780339814443253760.000000, 5411237970496873780339814443253760.000000]
 
 --- Band Width Comparison ---
-  Asymptotic CB width: 0.5307
-  Bootstrap  CB width: 0.4058
-  Asymptotic PB width: 1.2042
-  Bootstrap  PB width: 1.0720
+  Asymptotic CB width: 0.4476
+  Bootstrap  CB width: 0.3602
+  Asymptotic PB width: 1.1549
+  Bootstrap  PB width: 1.0473
